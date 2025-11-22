@@ -29,10 +29,12 @@
 pub mod context;
 pub mod expert;
 pub mod orchestrator;
+pub mod reservoir;
 pub mod router;
 pub mod types;
 
 pub use orchestrator::Orchestrator;
+pub use reservoir::EchoStateNetwork;
 pub use types::{Query, Response, RoutingDecision};
 
 /// Library version following semantic versioning
