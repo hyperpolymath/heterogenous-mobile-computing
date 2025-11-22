@@ -40,6 +40,18 @@ path = "src/main.rs"
 name = "mobile_ai_orchestrator"
 path = "src/lib.rs"
 
+[[bench]]
+name = "orchestrator_bench"
+harness = false
+
+[[bench]]
+name = "reservoir_bench"
+harness = false
+
+[[bench]]
+name = "mlp_bench"
+harness = false
+
 [profile.release]
 opt-level = "z"     # Optimize for size (mobile constraint)
 lto = true          # Link-time optimization
