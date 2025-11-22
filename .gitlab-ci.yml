@@ -1,0 +1,245 @@
+# GitLab CI/CD Configuration for Mobile AI Orchestrator
+# RSR Bronze Compliant
+
+stages:
+  - check
+  - test
+  - build
+  - deploy
+
+# Global variables
+variables:
+  CARGO_HOME: $CI_PROJECT_DIR/.cargo
+  RUST_VERSION: "1.75"
+
+# Cache Cargo dependencies
+cache:
+  paths:
+    - .cargo/
+    - target/
+
+# Template for Rust jobs
+.rust_template:
+  image: rust:${RUST_VERSION}
+  before_script:
+    - rustc --version
+    - cargo --version
+    - apt-get update && apt-get install -y just
+
+# === CHECK STAGE ===
+
+format:check:
+  extends: .rust_template
+  stage: check
+  script:
+    - cargo fmt --check
+  only:
+    - merge_requests
+    - main
+
+clippy:lint:
+  extends: .rust_template
+  stage: check
+  script:
+    - cargo clippy --all-targets --all-features -- -D warnings
+  only:
+    - merge_requests
+    - main
+
+security:audit:
+  extends: .rust_template
+  stage: check
+  script:
+    - cargo install cargo-audit
+    - cargo audit
+  allow_failure: true
+  only:
+    - merge_requests
+    - main
+
+rsr:compliance:
+  extends: .rust_template
+  stage: check
+  script:
+    - just rsr-compliance
+  only:
+    - merge_requests
+    - main
+
+# === TEST STAGE ===
+
+test:unit:
+  extends: .rust_template
+  stage: test
+  script:
+    - cargo test --verbose
+  coverage: '/^\s*lines:\s*\d+\.\d+%/'
+  artifacts:
+    reports:
+      junit: target/test-results.xml
+  only:
+    - merge_requests
+    - main
+
+test:coverage:
+  extends: .rust_template
+  stage: test
+  script:
+    - cargo install cargo-tarpaulin
+    - cargo tarpaulin --out Xml --output-dir target/coverage
+  artifacts:
+    paths:
+      - target/coverage/
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: target/coverage/cobertura.xml
+  coverage: '/^\d+\.\d+% coverage/'
+  only:
+    - main
+
+# === BUILD STAGE ===
+
+build:debug:
+  extends: .rust_template
+  stage: build
+  script:
+    - cargo build --verbose
+  artifacts:
+    paths:
+      - target/debug/mobile-ai
+    expire_in: 1 week
+  only:
+    - merge_requests
+    - main
+
+build:release:
+  extends: .rust_template
+  stage: build
+  script:
+    - cargo build --release --verbose
+  artifacts:
+    paths:
+      - target/release/mobile-ai
+    expire_in: 1 month
+  only:
+    - main
+    - tags
+
+build:network:
+  extends: .rust_template
+  stage: build
+  script:
+    - cargo build --release --features network --verbose
+  artifacts:
+    paths:
+      - target/release/mobile-ai
+    expire_in: 1 month
+  only:
+    - tags
+
+# Cross-compilation for Android (ARM64)
+build:android:
+  extends: .rust_template
+  stage: build
+  script:
+    - rustup target add aarch64-linux-android
+    - cargo build --target aarch64-linux-android --release
+  artifacts:
+    paths:
+      - target/aarch64-linux-android/release/mobile-ai
+    expire_in: 1 month
+  only:
+    - tags
+  allow_failure: true # May fail if NDK not configured
+
+# === DEPLOY STAGE ===
+
+pages:
+  extends: .rust_template
+  stage: deploy
+  script:
+    - cargo doc --no-deps
+    - mkdir -p public
+    - cp -r target/doc/* public/
+    - echo '<meta http-equiv="refresh" content="0; url=mobile_ai_orchestrator">' > public/index.html
+  artifacts:
+    paths:
+      - public
+  only:
+    - main
+
+# Release artifacts (for tags)
+release:artifacts:
+  extends: .rust_template
+  stage: deploy
+  script:
+    - cargo build --release
+    - mkdir -p release
+    - cp target/release/mobile-ai release/mobile-ai-${CI_COMMIT_TAG}
+    - tar -czf release/mobile-ai-${CI_COMMIT_TAG}.tar.gz -C target/release mobile-ai
+    - sha256sum release/mobile-ai-${CI_COMMIT_TAG}.tar.gz > release/mobile-ai-${CI_COMMIT_TAG}.tar.gz.sha256
+  artifacts:
+    paths:
+      - release/
+    expire_in: never
+  only:
+    - tags
+
+# === SCHEDULED JOBS ===
+
+# Nightly build (catch regressions)
+nightly:build:
+  extends: .rust_template
+  stage: build
+  script:
+    - cargo build --release
+    - cargo test
+  only:
+    - schedules
+  allow_failure: true
+
+# Dependency updates check
+nightly:deps:
+  extends: .rust_template
+  stage: check
+  script:
+    - cargo install cargo-outdated
+    - cargo outdated
+  only:
+    - schedules
+  allow_failure: true
+
+# === DOCKER BUILD (Future) ===
+
+# Uncomment when Docker deployment is needed
+# docker:build:
+#   stage: deploy
+#   image: docker:latest
+#   services:
+#     - docker:dind
+#   script:
+#     - docker build -t mobile-ai:${CI_COMMIT_TAG} .
+#     - docker push mobile-ai:${CI_COMMIT_TAG}
+#   only:
+#     - tags
+
+# === RULES ===
+
+# Only run on MRs and main branch by default
+workflow:
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_TAG
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+
+# === OPTIONAL: Notifications ===
+
+# notify:slack:
+#   stage: .post
+#   script:
+#     - 'curl -X POST -H "Content-type: application/json" --data "{\"text\":\"Pipeline $CI_PIPELINE_ID finished with status: $CI_JOB_STATUS\"}" $SLACK_WEBHOOK_URL'
+#   when: on_failure
+#   only:
+#     - main

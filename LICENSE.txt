@@ -1,0 +1,147 @@
+=================================================================================
+DUAL LICENSE: MIT + Palimpsest License v0.8
+=================================================================================
+
+This project is dual-licensed. You may choose either license for your use:
+
+  1. MIT License (below)
+  2. Palimpsest License v0.8 (below)
+
+You are free to choose whichever license best suits your needs.
+
+=================================================================================
+MIT LICENSE
+=================================================================================
+
+Copyright (c) 2025 Jonathan Bowman (Hyperpolymath)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+=================================================================================
+PALIMPSEST LICENSE v0.8
+=================================================================================
+
+Palimpsest License v0.8
+https://palimpsest-license.org
+
+Copyright (c) 2025 Jonathan Bowman (Hyperpolymath)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+1. ATTRIBUTION
+   - The above copyright notice and this permission notice shall be included in
+     all copies or substantial portions of the Software.
+   - Attribution to the original author(s) must be maintained in all derivative
+     works.
+
+2. MODIFICATION & VERSIONING
+   - Derivative works must clearly indicate modifications made.
+   - Version history should be maintained where practical.
+   - The "palimpsest" nature of software evolution is acknowledged and encouraged.
+
+3. SHARE-ALIKE (Optional for this Project)
+   - This particular license does NOT require derivatives to use the same license.
+   - Derivatives may use any OSI-approved license.
+
+4. NO WARRANTY
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+   SOFTWARE.
+
+5. PHILOSOPHICAL PRINCIPLES
+   This license embodies the concept of "palimpsest" - software as a living
+   document that evolves through layers of modification, each preserving traces
+   of its history. We encourage:
+
+   - Transparency in modification history
+   - Respect for previous contributors
+   - Recognition that code is iterative and collaborative
+   - Embrace of software's temporal and evolving nature
+
+=================================================================================
+ADDITIONAL NOTES
+=================================================================================
+
+**Why Dual License?**
+
+This project uses dual licensing to maximize freedom and compatibility:
+
+- **MIT License**: Widely recognized, minimal restrictions, corporate-friendly
+- **Palimpsest License**: Emphasizes attribution and philosophical alignment
+  with the iterative, layered nature of software development
+
+**For Contributors:**
+
+By contributing to this project, you agree to license your contributions under
+the same dual license terms (MIT + Palimpsest v0.8).
+
+**For Users:**
+
+You may choose either license. If you need to comply with corporate policies
+that only recognize OSI-approved licenses, use the MIT License. If you appreciate
+the philosophical principles of Palimpsest, you may choose that instead.
+
+**License Selection:**
+
+No action is required. Both licenses grant you permission. Simply comply with
+the terms of whichever license you prefer.
+
+**Attribution Example:**
+
+When using this software, proper attribution might look like:
+
+  "Built with Mobile AI Orchestrator by Jonathan Bowman (Hyperpolymath)
+   https://github.com/Hyperpolymath/heterogenous-mobile-computing
+   Licensed under MIT + Palimpsest v0.8"
+
+=================================================================================
+THIRD-PARTY LICENSES
+=================================================================================
+
+This project uses the following dependencies (Phase 1):
+
+1. **serde** (v1.0)
+   - License: MIT OR Apache-2.0
+   - Copyright: Serde developers
+   - https://github.com/serde-rs/serde
+
+2. **serde_json** (v1.0)
+   - License: MIT OR Apache-2.0
+   - Copyright: Serde developers
+   - https://github.com/serde-rs/json
+
+All dependencies are compatible with MIT licensing.
+
+=================================================================================
+END OF LICENSE
+=================================================================================
+
+For questions about licensing, contact:
+  Jonathan Bowman <hyperpolymath@protonmail.com>
+
+Last updated: 2025-11-22

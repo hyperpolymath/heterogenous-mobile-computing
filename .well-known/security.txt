@@ -1,0 +1,58 @@
+# security.txt - RFC 9116
+# https://securitytxt.org/
+
+Contact: mailto:hyperpolymath@protonmail.com
+Expires: 2026-11-22T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://github.com/Hyperpolymath/heterogenous-mobile-computing/.well-known/security.txt
+
+# Policy
+Policy: https://github.com/Hyperpolymath/heterogenous-mobile-computing/blob/main/SECURITY.md
+
+# Acknowledgments
+Acknowledgments: https://github.com/Hyperpolymath/heterogenous-mobile-computing/blob/main/SECURITY.md#hall-of-fame
+
+# Hiring (Future)
+# Hiring: https://jobs.example.com
+
+# Encryption
+# PGP key for secure communication (future)
+# Encryption: https://keys.openpgp.org/...
+
+# Response Timeline
+# - Initial response: Within 72 hours
+# - Severity assessment: Within 7 days
+# - Patch development: Within 30 days (High/Critical)
+# - Coordinated disclosure: 30 days after patch
+
+# Scope
+# In-scope:
+#   - Memory safety violations
+#   - Input validation bypasses
+#   - Privacy leaks
+#   - Resource exhaustion (DoS)
+#   - Cryptographic issues (Phase 2+)
+#
+# Out-of-scope:
+#   - Physical device access required
+#   - Rooted/jailbroken devices
+#   - Social engineering
+#   - Issues in third-party dependencies (report to upstream)
+
+# Safe Harbor
+# This project follows responsible disclosure principles.
+# Good faith security researchers will not face legal action for:
+#   - Testing against their own installations
+#   - Reporting vulnerabilities privately
+#   - Giving reasonable time for fixes (30 days minimum)
+
+# Additional Information
+# - Project uses Rust with #![forbid(unsafe_code)]
+# - RSR Bronze compliant
+# - Zero-day response: Expedited for Critical severity
+# - CVE assignment: Will request if applicable
+
+# Version
+# This security.txt file version: 1.0
+# Last updated: 2025-11-22
+# Next review: 2026-01-22

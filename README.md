@@ -1,0 +1,249 @@
+# Mobile AI Orchestrator
+
+[![RSR Compliance](https://img.shields.io/badge/RSR-Bronze-cd7f32)](https://rhodium-standard.org)
+[![License](https://img.shields.io/badge/license-MIT%20%2B%20Palimpsest--0.8-blue)](LICENSE.txt)
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](.gitlab-ci.yml)
+[![Safety](https://img.shields.io/badge/unsafe-forbidden-success)](src/lib.rs)
+
+A hybrid AI orchestration system for constrained mobile platforms, combining on-device inference with intelligent routing to remote APIs.
+
+## Features
+
+🔒 **Safety-First**
+- Zero `unsafe` blocks
+- Type-safe by design (Rust ownership model)
+- Memory-safe (compile-time guarantees)
+- Formal rule-based safety layer
+
+📱 **Mobile-Optimized**
+- Designed for 2-4GB RAM devices
+- Battery-aware processing
+- Optimized for ARM (NEON intrinsics)
+- Support for NPU/GPU acceleration (future)
+
+🌐 **Offline-First**
+- Core functionality works without internet
+- Network features optional (feature flag)
+- Graceful degradation
+- Local SLM inference (1-3B parameters)
+
+🧠 **Intelligent Routing**
+- Automatic local vs. remote decisions
+- Context-aware processing
+- Project-specific state management
+- Conversation history tracking
+
+🔐 **Privacy-Preserving**
+- Automatic detection of sensitive data
+- Configurable blocking rules
+- On-device processing by default
+- Explainable routing decisions
+
+## Quick Start
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/Hyperpolymath/heterogenous-mobile-computing
+cd heterogenous-mobile-computing
+
+# Build (offline-first by default)
+cargo build --release
+
+# Run
+./target/release/mobile-ai --help
+```
+
+### Usage
+
+**Interactive mode:**
+```bash
+./target/release/mobile-ai --interactive
+```
+
+**Single query:**
+```bash
+./target/release/mobile-ai "How do I iterate a HashMap in Rust?"
+```
+
+**With project context:**
+```bash
+./target/release/mobile-ai --project oblibeny "Explain the type system"
+```
+
+**Enable network features:**
+```bash
+cargo build --release --features network
+```
+
+## Architecture
+
+```
+Query → Expert System → Router → Context → Inference → Response
+          (Safety)      (Route)   (History)  (Local/API)
+```
+
+See [claude.md](claude.md) for comprehensive architecture documentation.
+
+### Components
+
+| Component | Purpose | Implementation |
+|-----------|---------|----------------|
+| **Expert System** | Rule-based safety | `src/expert.rs` |
+| **Router** | Local/remote routing | `src/router.rs` |
+| **Context Manager** | Conversation state | `src/context.rs` |
+| **Orchestrator** | Main coordinator | `src/orchestrator.rs` |
+
+## Phase 1 MVP (Current)
+
+✅ Expert system (rule-based safety)
+✅ Heuristic router (keyword-based routing)
+✅ Context manager (in-memory history)
+✅ Orchestrator (pipeline coordination)
+✅ CLI interface
+✅ Comprehensive tests (>90% coverage)
+
+## Future Phases
+
+**Phase 2: Memory & Context** (Weeks 5-8)
+- Reservoir computing (liquid state machines)
+- RAG system (document retrieval)
+- Knowledge graph (project relationships)
+
+**Phase 3: Specialization** (Weeks 9-12)
+- Mixture of Experts (specialized models)
+- Bayesian decision engine
+- Background monitoring
+
+**Phase 4: Advanced** (Months 4+)
+- Spiking neural networks
+- Reinforcement learning
+- On-device training
+
+## Development
+
+### Prerequisites
+
+- Rust 1.75+ (`rustup`)
+- Just (`cargo install just`)
+- Nix (optional, for reproducible builds)
+
+### Building
+
+```bash
+# Standard build
+cargo build
+
+# Release build (optimized)
+cargo build --release
+
+# With network features
+cargo build --features network
+
+# Using Nix (reproducible)
+nix build
+```
+
+### Testing
+
+```bash
+# Run all tests
+cargo test
+
+# Run with coverage
+cargo tarpaulin --out Html
+
+# Benchmarks (future)
+cargo bench
+
+# RSR validation
+just validate
+```
+
+### Documentation
+
+```bash
+# Generate API documentation
+cargo doc --open
+
+# Read architecture docs
+cat claude.md
+```
+
+## RSR Compliance
+
+This project follows the **Rhodium Standard Repository** framework and achieves **Bronze-level** compliance:
+
+✅ Type safety (Rust type system)
+✅ Memory safety (ownership model, zero `unsafe`)
+✅ Offline-first (network is optional)
+✅ Comprehensive documentation
+✅ Test coverage (>90%)
+✅ Build system (`justfile`, `flake.nix`)
+✅ CI/CD automation
+✅ Security policy (`SECURITY.md`)
+✅ Dual licensing (MIT + Palimpsest-0.8)
+✅ Community governance (TPCF Perimeter 3)
+
+See [RSR Compliance Checklist](docs/compliance-checklist.md) for details.
+
+## Contributing
+
+Contributions are welcome! This project operates under the **Tri-Perimeter Contribution Framework (TPCF)**.
+
+**Current Perimeter**: 3 (Community Sandbox - fully open)
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+## Security
+
+For security issues, see [SECURITY.md](SECURITY.md) or contact:
+- Email: hyperpolymath@protonmail.com
+- Security contact: `.well-known/security.txt`
+
+## License
+
+Dual-licensed under:
+- [MIT License](LICENSE.txt)
+- [Palimpsest License v0.8](LICENSE.txt)
+
+You may choose either license for your use.
+
+## Citation
+
+If you use this work in research, please cite:
+
+```bibtex
+@software{mobile_ai_orchestrator_2025,
+  author = {Bowman, Jonathan},
+  title = {Mobile AI Orchestrator: Hybrid Architecture for Constrained Platforms},
+  year = {2025},
+  url = {https://github.com/Hyperpolymath/heterogenous-mobile-computing},
+  note = {RSR Bronze-compliant, Phase 1 MVP}
+}
+```
+
+## Related Projects
+
+- **Echomesh**: Conversation context preservation across sessions
+- **Oblíbený**: Safety-critical programming language with formal verification
+- **UPM**: Universal Project Manager for multi-project workflows
+- **CADRE**: Distributed state management via CRDTs
+
+## Contact
+
+**Author**: Jonathan Bowman (Hyperpolymath)
+**Email**: hyperpolymath@protonmail.com
+**Matrix**: (see MAINTAINERS.md)
+
+## Acknowledgments
+
+- **llama.cpp** for ARM-optimized LLM inference
+- **Anthropic** for Claude API
+- **Rust community** for safety-first tooling
+- **RSR framework** for principled repository design
+
+---
+
+*Built with Rust 🦀 • RSR Bronze Compliant • Offline-First • Type-Safe • Memory-Safe*

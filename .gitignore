@@ -1,0 +1,88 @@
+# Rust
+/target/
+**/*.rs.bk
+*.pdb
+Cargo.lock
+# Keep Cargo.lock for binary projects, but gitignore for library projects
+# Uncomment if this becomes a library-only project:
+# !Cargo.lock
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Rust-specific
+*.profraw
+*.profdata
+flamegraph.svg
+perf.data*
+
+# Testing and Coverage
+target/coverage/
+tarpaulin-report.html
+lcov.info
+*.gcda
+*.gcno
+*.gcov
+
+# Documentation
+/doc/
+
+# Build artifacts
+*.so
+*.dylib
+*.dll
+*.exe
+
+# Nix
+result
+result-*
+.direnv/
+
+# Just task runner
+.just-*
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+logs/
+
+# OS files
+Thumbs.db
+Desktop.ini
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# Local configuration
+config.local.toml
+secrets.toml
+
+# Phase 2+ specific (future)
+models/
+*.gguf
+*.bin
+embeddings/
+*.db
+*.sqlite
+*.sqlite3
+
+# Development
+.cargo/
+.cache/

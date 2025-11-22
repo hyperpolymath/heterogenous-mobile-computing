@@ -1,0 +1,60 @@
+[package]
+name = "mobile-ai-orchestrator"
+version = "0.1.0"
+edition = "2021"
+authors = ["Jonathan Bowman <hyperpolymath@protonmail.com>"]
+license = "MIT OR Palimpsest-0.8"
+repository = "https://github.com/Hyperpolymath/heterogenous-mobile-computing"
+description = "Hybrid AI orchestration system for constrained mobile platforms with reservoir computing"
+keywords = ["ai", "mobile", "orchestration", "reservoir-computing", "offline-first"]
+categories = ["embedded", "science", "command-line-utilities"]
+readme = "README.md"
+rust-version = "1.75"
+
+[dependencies]
+# Core dependencies - keeping minimal for Bronze RSR compliance
+serde = { version = "1.0", features = ["derive"] }
+serde_json = { version = "1.0" }
+
+# Optional dependencies for future phases
+tokio = { version = "1.35", features = ["rt", "macros", "sync"], optional = true }
+reqwest = { version = "0.11", features = ["json"], optional = true }
+
+[dev-dependencies]
+# Test dependencies
+criterion = "0.5"
+
+[features]
+default = []
+# Network features disabled by default for offline-first
+network = ["tokio", "reqwest"]
+# Phase 2+ features
+reservoir = []
+rag = []
+
+[[bin]]
+name = "mobile-ai"
+path = "src/main.rs"
+
+[lib]
+name = "mobile_ai_orchestrator"
+path = "src/lib.rs"
+
+[profile.release]
+opt-level = "z"     # Optimize for size (mobile constraint)
+lto = true          # Link-time optimization
+codegen-units = 1   # Better optimization
+strip = true        # Strip symbols
+panic = "abort"     # Smaller binary
+
+[profile.dev]
+opt-level = 1       # Faster compilation in dev
+
+# RSR Compliance Metadata
+[package.metadata.rsr]
+compliance_level = "bronze"
+safety_model = "type-safe + memory-safe"
+offline_first = true
+tpcf_perimeter = 3
+formal_verification = "rust-compile-time"
+zero_unsafe_blocks = true
