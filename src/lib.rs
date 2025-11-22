@@ -32,10 +32,12 @@ pub mod mlp;
 pub mod orchestrator;
 pub mod reservoir;
 pub mod router;
+pub mod snn;
 pub mod types;
 
 pub use orchestrator::Orchestrator;
 pub use reservoir::EchoStateNetwork;
+pub use snn::SpikingNetwork;
 pub use types::{Query, Response, RoutingDecision};
 
 /// Library version following semantic versioning
