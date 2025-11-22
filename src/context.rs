@@ -10,12 +10,16 @@
 //! - State snapshots
 //! - Context retrieval for query augmentation
 
+use crate::reservoir::{encode_text, EchoStateNetwork};
 use crate::types::{ContextSnapshot, ConversationTurn, Query, Response};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
 /// Maximum conversation history to keep in memory
 const MAX_HISTORY_SIZE: usize = 100;
+
+/// Dimension for text encoding (matches reservoir input size)
+const ENCODING_DIM: usize = 384;
 
 /// Context manager for maintaining conversation state
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -26,21 +30,51 @@ pub struct ContextManager {
     history: Vec<ConversationTurn>,
     /// Per-project context snapshots
     project_contexts: HashMap<String, Vec<ConversationTurn>>,
+    /// Reservoir for temporal context encoding (Phase 2)
+    #[serde(skip)]
+    reservoir: Option<EchoStateNetwork>,
 }
 
 impl ContextManager {
     /// Create a new context manager
     pub fn new() -> Self {
+        Self::with_reservoir(false)
+    }
+
+    /// Create a context manager with reservoir computing enabled
+    pub fn with_reservoir(enable_reservoir: bool) -> Self {
+        let reservoir = if enable_reservoir {
+            Some(EchoStateNetwork::new(
+                ENCODING_DIM, // input size
+                1000,         // reservoir size
+                100,          // output size (compressed context)
+                0.7,          // leak rate
+                0.95,         // spectral radius
+            ))
+        } else {
+            None
+        };
+
         Self {
             current_project: None,
             history: Vec::new(),
             project_contexts: HashMap::new(),
+            reservoir,
         }
     }
 
     /// Add a conversation turn to history
     pub fn add_turn(&mut self, query: Query, response: Response) {
-        let turn = ConversationTurn { query, response };
+        let turn = ConversationTurn {
+            query: query.clone(),
+            response: response.clone(),
+        };
+
+        // Update reservoir with query text if enabled
+        if let Some(ref mut reservoir) = self.reservoir {
+            let encoding = encode_text(&query.text, ENCODING_DIM);
+            reservoir.update(&encoding);
+        }
 
         // Add to main history
         self.history.insert(0, turn.clone());
@@ -96,10 +130,24 @@ impl ContextManager {
 
     /// Get a context snapshot for augmenting queries
     pub fn snapshot(&self, history_size: usize) -> ContextSnapshot {
+        let reservoir_state = self.reservoir.as_ref().map(|r| r.state().to_vec());
+
         ContextSnapshot {
             project: self.current_project.clone(),
             history: self.recent_history(history_size),
-            reservoir_state: None, // Phase 2: reservoir computing
+            reservoir_state,
+        }
+    }
+
+    /// Get reservoir state vector (if reservoir is enabled)
+    pub fn reservoir_state(&self) -> Option<Vec<f32>> {
+        self.reservoir.as_ref().map(|r| r.state().to_vec())
+    }
+
+    /// Reset reservoir state (if enabled)
+    pub fn reset_reservoir(&mut self) {
+        if let Some(ref mut reservoir) = self.reservoir {
+            reservoir.reset();
         }
     }
 
@@ -275,5 +323,55 @@ mod tests {
         assert_eq!(projects.len(), 2);
         assert!(projects.contains(&"project-1".to_string()));
         assert!(projects.contains(&"project-2".to_string()));
+    }
+
+    #[test]
+    fn test_context_manager_with_reservoir() {
+        let mut cm = ContextManager::with_reservoir(true);
+
+        // Reservoir state should initially be zeros
+        let state1 = cm.reservoir_state();
+        assert!(state1.is_some());
+        assert_eq!(state1.as_ref().unwrap().len(), 1000);
+
+        // Add a turn - reservoir should update
+        cm.add_turn(Query::new("Hello world"), create_test_response("Hi"));
+
+        let state2 = cm.reservoir_state();
+        assert!(state2.is_some());
+
+        // State should have changed
+        assert_ne!(state1, state2);
+
+        // Snapshot should include reservoir state
+        let snapshot = cm.snapshot(5);
+        assert!(snapshot.reservoir_state.is_some());
+        assert_eq!(snapshot.reservoir_state.unwrap().len(), 1000);
+    }
+
+    #[test]
+    fn test_reservoir_reset() {
+        let mut cm = ContextManager::with_reservoir(true);
+
+        cm.add_turn(Query::new("test"), create_test_response("response"));
+
+        let state = cm.reservoir_state().unwrap();
+        assert!(!state.iter().all(|&x| x == 0.0));
+
+        cm.reset_reservoir();
+
+        let state_after_reset = cm.reservoir_state().unwrap();
+        assert!(state_after_reset.iter().all(|&x| x == 0.0));
+    }
+
+    #[test]
+    fn test_context_manager_without_reservoir() {
+        let cm = ContextManager::new();
+
+        // Without reservoir, state should be None
+        assert!(cm.reservoir_state().is_none());
+
+        let snapshot = cm.snapshot(5);
+        assert!(snapshot.reservoir_state.is_none());
     }
 }
