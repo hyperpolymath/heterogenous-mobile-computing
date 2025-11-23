@@ -95,7 +95,7 @@ See [claude.md](claude.md) for comprehensive architecture documentation.
 | **Context Manager** | Conversation state | `src/context.rs` |
 | **Orchestrator** | Main coordinator | `src/orchestrator.rs` |
 
-## Phase 1 MVP (Current)
+## Phase 1 MVP (Implemented)
 
 ✅ Expert system (rule-based safety)
 ✅ Heuristic router (keyword-based routing)
@@ -104,22 +104,34 @@ See [claude.md](claude.md) for comprehensive architecture documentation.
 ✅ CLI interface
 ✅ Comprehensive tests (>90% coverage)
 
+## Phase 2+ Features (Implemented)
+
+✅ **Reservoir Computing** - Echo State Networks for temporal context compression
+✅ **Neural Routing** - Multi-Layer Perceptron for learned routing decisions
+✅ **Spiking Neural Networks** - Event-driven wake detection (ultra-low power)
+✅ **Benchmarking Suite** - Performance profiling with Criterion
+✅ **Example Applications** - Runnable demonstrations of all features
+
+**Stats**: 69+ tests, 7,500+ lines of code, 10 modules
+
+See [AUTONOMOUS_DEVELOPMENT_SUMMARY.md](AUTONOMOUS_DEVELOPMENT_SUMMARY.md) for details.
+
 ## Future Phases
 
-**Phase 2: Memory & Context** (Weeks 5-8)
-- Reservoir computing (liquid state machines)
-- RAG system (document retrieval)
-- Knowledge graph (project relationships)
+**Phase 3: Integration & Training**
+- [ ] Integrate MLP with router (replace heuristics)
+- [ ] Replace bag-of-words with sentence-transformers
+- [ ] Train reservoir on real conversation data
+- [ ] Deploy SNN on DSP/NPU hardware
 
-**Phase 3: Specialization** (Weeks 9-12)
-- Mixture of Experts (specialized models)
-- Bayesian decision engine
-- Background monitoring
-
-**Phase 4: Advanced** (Months 4+)
-- Spiking neural networks
-- Reinforcement learning
-- On-device training
+**Phase 4: Advanced Features**
+- [ ] Mixture of Experts (specialized models)
+- [ ] Bayesian decision engine
+- [ ] SQLite persistence
+- [ ] RAG system (document retrieval)
+- [ ] Knowledge graph (project relationships)
+- [ ] On-device fine-tuning
+- [ ] Reinforcement learning from user feedback
 
 ## Development
 
@@ -163,12 +175,37 @@ just validate
 
 ### Documentation
 
+**Core Documentation:**
+- [claude.md](claude.md) - Comprehensive architecture (10,000+ words)
+- [AUTONOMOUS_DEVELOPMENT_SUMMARY.md](AUTONOMOUS_DEVELOPMENT_SUMMARY.md) - Development progress and features
+
+**Usage Guides:**
+- [ADVANCED_FEATURES.md](ADVANCED_FEATURES.md) - Reservoir computing, MLP routing, SNN wake detection
+- [DEPLOYMENT.md](DEPLOYMENT.md) - Platform deployment (Android, iOS, Linux mobile)
+- [PERFORMANCE.md](PERFORMANCE.md) - Optimization techniques for constrained devices
+
+**Examples:**
+```bash
+# Run basic usage example
+cargo run --example basic_usage
+
+# Reservoir computing demo
+cargo run --example reservoir_demo
+
+# MLP router demonstration
+cargo run --example mlp_router
+```
+
+**API Documentation:**
 ```bash
 # Generate API documentation
 cargo doc --open
+```
 
-# Read architecture docs
-cat claude.md
+**Benchmarks:**
+```bash
+# Run performance benchmarks
+cargo bench
 ```
 
 ## RSR Compliance
