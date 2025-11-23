@@ -87,7 +87,7 @@ impl Router {
     }
 
     /// Extract features from query for MLP input
-    fn extract_features(&self, query: &Query) -> Vec<f32> {
+    pub fn extract_features(&self, query: &Query) -> Vec<f32> {
         let mut features = vec![0.0; 384];
 
         // Feature 0: Normalized query length

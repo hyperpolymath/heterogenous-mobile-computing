@@ -189,6 +189,111 @@ impl MLP {
     pub fn output_size(&self) -> usize {
         self.output_size
     }
+
+    /// Backward pass (simplified backpropagation)
+    /// Returns (loss, gradients)
+    pub fn backward(&self, input: &[f32], target: &[f32]) -> (f32, Vec<Vec<Vec<f32>>>) {
+        // Forward pass to get activations
+        let mut activations = vec![input.to_vec()];
+        let mut current = input.to_vec();
+
+        for (layer_weights, layer_biases) in self.weights.iter().zip(&self.biases) {
+            let mut next = vec![0.0; layer_weights.len()];
+
+            for (i, (weights_row, bias)) in layer_weights.iter().zip(layer_biases).enumerate() {
+                let mut sum = *bias;
+                for (w, a) in weights_row.iter().zip(&current) {
+                    sum += w * a;
+                }
+                next[i] = sum;
+            }
+
+            // ReLU for hidden layers, linear for output
+            if layer_weights.len() != self.output_size {
+                for a in &mut next {
+                    *a = a.max(0.0);
+                }
+            }
+
+            activations.push(next.clone());
+            current = next;
+        }
+
+        // Compute loss (cross-entropy for classification)
+        let output = &activations[activations.len() - 1];
+        let mut loss = 0.0;
+        for (o, t) in output.iter().zip(target) {
+            loss += -t * o.max(1e-7).ln();
+        }
+
+        // Backward pass (simplified)
+        let mut weight_gradients = vec![vec![vec![0.0; 0]; 0]; self.weights.len()];
+        let mut bias_gradients = vec![vec![0.0; 0]; self.biases.len()];
+
+        // Initialize with same structure as weights/biases
+        for (i, layer_weights) in self.weights.iter().enumerate() {
+            weight_gradients[i] = vec![vec![0.0; layer_weights[0].len()]; layer_weights.len()];
+            bias_gradients[i] = vec![0.0; self.biases[i].len()];
+        }
+
+        // Output layer gradient
+        let mut delta: Vec<f32> = output
+            .iter()
+            .zip(target)
+            .map(|(o, t)| o - t)
+            .collect();
+
+        // Backpropagate through layers
+        for layer_idx in (0..self.weights.len()).rev() {
+            let prev_activation = &activations[layer_idx];
+
+            // Compute weight gradients
+            for (i, row_gradient) in weight_gradients[layer_idx].iter_mut().enumerate() {
+                for (j, grad) in row_gradient.iter_mut().enumerate() {
+                    *grad = delta[i] * prev_activation[j];
+                }
+            }
+
+            // Compute bias gradients
+            for (i, grad) in bias_gradients[layer_idx].iter_mut().enumerate() {
+                *grad = delta[i];
+            }
+
+            // Propagate delta to previous layer
+            if layer_idx > 0 {
+                let mut new_delta = vec![0.0; prev_activation.len()];
+
+                for (i, weights_row) in self.weights[layer_idx].iter().enumerate() {
+                    for (j, &weight) in weights_row.iter().enumerate() {
+                        new_delta[j] += delta[i] * weight;
+                    }
+                }
+
+                // Apply ReLU derivative
+                let pre_activation = &activations[layer_idx];
+                for (i, d) in new_delta.iter_mut().enumerate() {
+                    if pre_activation[i] <= 0.0 {
+                        *d = 0.0;
+                    }
+                }
+
+                delta = new_delta;
+            }
+        }
+
+        (loss, weight_gradients)
+    }
+
+    /// Update weights using gradients
+    pub fn update(&mut self, gradients: &[Vec<Vec<f32>>], learning_rate: f32) {
+        for (layer_idx, layer_gradients) in gradients.iter().enumerate() {
+            for (i, row_gradients) in layer_gradients.iter().enumerate() {
+                for (j, &gradient) in row_gradients.iter().enumerate() {
+                    self.weights[layer_idx][i][j] -= learning_rate * gradient;
+                }
+            }
+        }
+    }
 }
 
 #[cfg(test)]

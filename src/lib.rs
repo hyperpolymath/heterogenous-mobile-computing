@@ -34,6 +34,7 @@ pub mod persistence;
 pub mod reservoir;
 pub mod router;
 pub mod snn;
+pub mod training;
 pub mod types;
 
 pub use orchestrator::Orchestrator;
