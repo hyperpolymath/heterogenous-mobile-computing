@@ -253,7 +253,7 @@ If you use this work in research, please cite:
 
 ```bibtex
 @software{mobile_ai_orchestrator_2025,
-  author = {Bowman, Jonathan},
+  author = {Jewell, Jonathan},
   title = {Mobile AI Orchestrator: Hybrid Architecture for Constrained Platforms},
   year = {2025},
   url = {https://github.com/Hyperpolymath/heterogenous-mobile-computing},
@@ -270,8 +270,8 @@ If you use this work in research, please cite:
 
 ## Contact
 
-**Author**: Jonathan Bowman (Hyperpolymath)
-**Email**: hyperpolymath@protonmail.com
+**Author**: Jonathan Jewell (Hyperpolymath)
+**Email**: jonathan.jewell@open.ac.uk
 **Matrix**: (see MAINTAINERS.md)
 
 ## Acknowledgments
