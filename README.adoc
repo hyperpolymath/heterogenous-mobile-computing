@@ -1,4 +1,4 @@
-# Mobile AI Orchestrator
+= Mobile AI Orchestrator
 
 [![RSR Compliance](https://img.shields.io/badge/RSR-Bronze-cd7f32)](https://rhodium-standard.org)
 [![License](https://img.shields.io/badge/license-MIT%20%2B%20Palimpsest--0.8-blue)](LICENSE.txt)
@@ -7,77 +7,77 @@
 
 A hybrid AI orchestration system for constrained mobile platforms, combining on-device inference with intelligent routing to remote APIs.
 
-## Features
+== Features
 
-🔒 **Safety-First**
+🔒 *Safety-First*
 - Zero `unsafe` blocks
 - Type-safe by design (Rust ownership model)
 - Memory-safe (compile-time guarantees)
 - Formal rule-based safety layer
 
-📱 **Mobile-Optimized**
+📱 *Mobile-Optimized*
 - Designed for 2-4GB RAM devices
 - Battery-aware processing
 - Optimized for ARM (NEON intrinsics)
 - Support for NPU/GPU acceleration (future)
 
-🌐 **Offline-First**
+🌐 *Offline-First*
 - Core functionality works without internet
 - Network features optional (feature flag)
 - Graceful degradation
 - Local SLM inference (1-3B parameters)
 
-🧠 **Intelligent Routing**
+🧠 *Intelligent Routing*
 - Automatic local vs. remote decisions
 - Context-aware processing
 - Project-specific state management
 - Conversation history tracking
 
-🔐 **Privacy-Preserving**
+🔐 *Privacy-Preserving*
 - Automatic detection of sensitive data
 - Configurable blocking rules
 - On-device processing by default
 - Explainable routing decisions
 
-## Quick Start
+== Quick Start
 
-### Installation
+=== Installation
 
 ```bash
-# Clone the repository
+= Clone the repository
 git clone https://github.com/Hyperpolymath/heterogenous-mobile-computing
 cd heterogenous-mobile-computing
 
-# Build (offline-first by default)
+= Build (offline-first by default)
 cargo build --release
 
-# Run
+= Run
 ./target/release/mobile-ai --help
 ```
 
-### Usage
+=== Usage
 
-**Interactive mode:**
+*Interactive mode:*
 ```bash
 ./target/release/mobile-ai --interactive
 ```
 
-**Single query:**
+*Single query:*
 ```bash
 ./target/release/mobile-ai "How do I iterate a HashMap in Rust?"
 ```
 
-**With project context:**
+*With project context:*
 ```bash
 ./target/release/mobile-ai --project oblibeny "Explain the type system"
 ```
 
-**Enable network features:**
+*Enable network features:*
 ```bash
 cargo build --release --features network
 ```
 
-## Architecture
+== Architecture
 
 ```
 Query → Expert System → Router → Context → Inference → Response
@@ -86,16 +86,16 @@ Query → Expert System → Router → Context → Inference → Response
 
 See [claude.md](claude.md) for comprehensive architecture documentation.
 
-### Components
+=== Components
 
 | Component | Purpose | Implementation |
 |-----------|---------|----------------|
-| **Expert System** | Rule-based safety | `src/expert.rs` |
-| **Router** | Local/remote routing | `src/router.rs` |
-| **Context Manager** | Conversation state | `src/context.rs` |
-| **Orchestrator** | Main coordinator | `src/orchestrator.rs` |
+| *Expert System* | Rule-based safety | `src/expert.rs` |
+| *Router* | Local/remote routing | `src/router.rs` |
+| *Context Manager* | Conversation state | `src/context.rs` |
+| *Orchestrator* | Main coordinator | `src/orchestrator.rs` |
 
-## Phase 1 MVP (Implemented)
+== Phase 1 MVP (Implemented)
 
 ✅ Expert system (rule-based safety)
 ✅ Heuristic router (keyword-based routing)
@@ -104,27 +104,27 @@ See [claude.md](claude.md) for comprehensive architecture documentation.
 ✅ CLI interface
 ✅ Comprehensive tests (>90% coverage)
 
-## Phase 2+ Features (Implemented)
+== Phase 2+ Features (Implemented)
 
-✅ **Reservoir Computing** - Echo State Networks for temporal context compression
-✅ **Neural Routing** - Multi-Layer Perceptron for learned routing decisions
-✅ **Spiking Neural Networks** - Event-driven wake detection (ultra-low power)
-✅ **Benchmarking Suite** - Performance profiling with Criterion
-✅ **Example Applications** - Runnable demonstrations of all features
+✅ *Reservoir Computing* - Echo State Networks for temporal context compression
+✅ *Neural Routing* - Multi-Layer Perceptron for learned routing decisions
+✅ *Spiking Neural Networks* - Event-driven wake detection (ultra-low power)
+✅ *Benchmarking Suite* - Performance profiling with Criterion
+✅ *Example Applications* - Runnable demonstrations of all features
 
-**Stats**: 69+ tests, 7,500+ lines of code, 10 modules
+*Stats*: 69+ tests, 7,500+ lines of code, 10 modules
 
 See [AUTONOMOUS_DEVELOPMENT_SUMMARY.md](AUTONOMOUS_DEVELOPMENT_SUMMARY.md) for details.
 
-## Future Phases
+== Future Phases
 
-**Phase 3: Integration & Training**
+*Phase 3: Integration & Training*
 - [ ] Integrate MLP with router (replace heuristics)
 - [ ] Replace bag-of-words with sentence-transformers
 - [ ] Train reservoir on real conversation data
 - [ ] Deploy SNN on DSP/NPU hardware
 
-**Phase 4: Advanced Features**
+*Phase 4: Advanced Features*
 - [ ] Mixture of Experts (specialized models)
 - [ ] Bayesian decision engine
 - [ ] SQLite persistence
@@ -133,84 +133,84 @@ See [AUTONOMOUS_DEVELOPMENT_SUMMARY.md](AUTONOMOUS_DEVELOPMENT_SUMMARY.md) for d
 - [ ] On-device fine-tuning
 - [ ] Reinforcement learning from user feedback
 
-## Development
+== Development
 
-### Prerequisites
+=== Prerequisites
 
 - Rust 1.75+ (`rustup`)
 - Just (`cargo install just`)
 - Nix (optional, for reproducible builds)
 
-### Building
+=== Building
 
 ```bash
-# Standard build
+= Standard build
 cargo build
 
-# Release build (optimized)
+= Release build (optimized)
 cargo build --release
 
-# With network features
+= With network features
 cargo build --features network
 
-# Using Nix (reproducible)
+= Using Nix (reproducible)
 nix build
 ```
 
-### Testing
+=== Testing
 
 ```bash
-# Run all tests
+= Run all tests
 cargo test
 
-# Run with coverage
+= Run with coverage
 cargo tarpaulin --out Html
 
-# Benchmarks (future)
+= Benchmarks (future)
 cargo bench
 
-# RSR validation
+= RSR validation
 just validate
 ```
 
-### Documentation
+=== Documentation
 
-**Core Documentation:**
+*Core Documentation:*
 - [claude.md](claude.md) - Comprehensive architecture (10,000+ words)
 - [AUTONOMOUS_DEVELOPMENT_SUMMARY.md](AUTONOMOUS_DEVELOPMENT_SUMMARY.md) - Development progress and features
 
-**Usage Guides:**
+*Usage Guides:*
 - [ADVANCED_FEATURES.md](ADVANCED_FEATURES.md) - Reservoir computing, MLP routing, SNN wake detection
 - [DEPLOYMENT.md](DEPLOYMENT.md) - Platform deployment (Android, iOS, Linux mobile)
 - [PERFORMANCE.md](PERFORMANCE.md) - Optimization techniques for constrained devices
 
-**Examples:**
+*Examples:*
 ```bash
-# Run basic usage example
+= Run basic usage example
 cargo run --example basic_usage
 
-# Reservoir computing demo
+= Reservoir computing demo
 cargo run --example reservoir_demo
 
-# MLP router demonstration
+= MLP router demonstration
 cargo run --example mlp_router
 ```
 
-**API Documentation:**
+*API Documentation:*
 ```bash
-# Generate API documentation
+= Generate API documentation
 cargo doc --open
 ```
 
-**Benchmarks:**
+*Benchmarks:*
 ```bash
-# Run performance benchmarks
+= Run performance benchmarks
 cargo bench
 ```
 
-## RSR Compliance
+== RSR Compliance
 
-This project follows the **Rhodium Standard Repository** framework and achieves **Bronze-level** compliance:
+This project follows the *Rhodium Standard Repository* framework and achieves *Bronze-level* compliance:
 
 ✅ Type safety (Rust type system)
 ✅ Memory safety (ownership model, zero `unsafe`)
@@ -225,21 +225,21 @@ This project follows the **Rhodium Standard Repository** framework and achieves 
 
 See [RSR Compliance Checklist](docs/compliance-checklist.md) for details.
 
-## Contributing
+== Contributing
 
-Contributions are welcome! This project operates under the **Tri-Perimeter Contribution Framework (TPCF)**.
+Contributions are welcome! This project operates under the *Tri-Perimeter Contribution Framework (TPCF)*.
 
-**Current Perimeter**: 3 (Community Sandbox - fully open)
+*Current Perimeter*: 3 (Community Sandbox - fully open)
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
-## Security
+== Security
 
 For security issues, see [SECURITY.md](SECURITY.md) or contact:
 - Email: hyperpolymath@protonmail.com
 - Security contact: `.well-known/security.txt`
 
-## License
+== License
 
 Dual-licensed under:
 - [MIT License](LICENSE.txt)
@@ -247,7 +247,7 @@ Dual-licensed under:
 
 You may choose either license for your use.
 
-## Citation
+== Citation
 
 If you use this work in research, please cite:
 
@@ -261,25 +261,25 @@ If you use this work in research, please cite:
 }
 ```
 
-## Related Projects
+== Related Projects
 
-- **Echomesh**: Conversation context preservation across sessions
-- **Oblíbený**: Safety-critical programming language with formal verification
-- **UPM**: Universal Project Manager for multi-project workflows
-- **CADRE**: Distributed state management via CRDTs
+- *Echomesh*: Conversation context preservation across sessions
+- *Oblíbený*: Safety-critical programming language with formal verification
+- *UPM*: Universal Project Manager for multi-project workflows
+- *CADRE*: Distributed state management via CRDTs
 
-## Contact
+== Contact
 
-**Author**: Jonathan Jewell (Hyperpolymath)
-**Email**: jonathan.jewell@open.ac.uk
-**Matrix**: (see MAINTAINERS.md)
+*Author*: Jonathan Jewell (Hyperpolymath)
+*Email*: jonathan.jewell@open.ac.uk
+*Matrix*: (see MAINTAINERS.md)
 
-## Acknowledgments
+== Acknowledgments
 
-- **llama.cpp** for ARM-optimized LLM inference
-- **Anthropic** for Claude API
-- **Rust community** for safety-first tooling
-- **RSR framework** for principled repository design
+- *llama.cpp* for ARM-optimized LLM inference
+- *Anthropic* for Claude API
+- *Rust community* for safety-first tooling
+- *RSR framework* for principled repository design
 
 ---
 
