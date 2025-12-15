@@ -1,28 +1,19 @@
-SPDX-License-Identifier: AGPL-3.0-or-later OR LicenseRef-Palimpsest-0.5
+SPDX-License-Identifier: MIT OR AGPL-3.0-or-later
+SPDX-FileCopyrightText: 2024-2025 hyperpolymath
 
-This software is dual-licensed under:
-  1. GNU Affero General Public License v3.0 or later
-  2. Palimpsest License v0.5
-
-See https://spdx.org/licenses/ for license details.
+================================================================================
+DUAL LICENSE: MIT OR AGPL-3.0-or-later
 ================================================================================
 
-=================================================================================
-DUAL LICENSE: MIT + Palimpsest License v0.8
-=================================================================================
+This project is dual-licensed under the MIT License OR the GNU Affero General
+Public License v3.0 or later. You may choose to use, copy, modify, and
+distribute this work under the terms of EITHER license (your choice).
 
-This project is dual-licensed. You may choose either license for your use:
-
-  1. MIT License (below)
-  2. Palimpsest License v0.8 (below)
-
-You are free to choose whichever license best suits your needs.
-
-=================================================================================
+--------------------------------------------------------------------------------
 MIT LICENSE
-=================================================================================
+--------------------------------------------------------------------------------
 
-Copyright (c) 2025 Jonathan Bowman (Hyperpolymath)
+Copyright (c) 2024-2025 hyperpolymath
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -42,115 +33,59 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-=================================================================================
-PALIMPSEST LICENSE v0.8
-=================================================================================
+--------------------------------------------------------------------------------
+GNU AFFERO GENERAL PUBLIC LICENSE v3.0 OR LATER
+--------------------------------------------------------------------------------
 
-Palimpsest License v0.8
-https://palimpsest-license.org
+This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU Affero General Public License as published by the Free
+Software Foundation, either version 3 of the License, or (at your option) any
+later version.
 
-Copyright (c) 2025 Jonathan Bowman (Hyperpolymath)
+This program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more
+details.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+You should have received a copy of the GNU Affero General Public License along
+with this program. If not, see <https://www.gnu.org/licenses/>.
 
-1. ATTRIBUTION
-   - The above copyright notice and this permission notice shall be included in
-     all copies or substantial portions of the Software.
-   - Attribution to the original author(s) must be maintained in all derivative
-     works.
+The full text of the AGPL-3.0 is available at:
+  https://www.gnu.org/licenses/agpl-3.0.txt
 
-2. MODIFICATION & VERSIONING
-   - Derivative works must clearly indicate modifications made.
-   - Version history should be maintained where practical.
-   - The "palimpsest" nature of software evolution is acknowledged and encouraged.
+--------------------------------------------------------------------------------
+CHOOSING YOUR LICENSE
+--------------------------------------------------------------------------------
 
-3. SHARE-ALIKE (Optional for this Project)
-   - This particular license does NOT require derivatives to use the same license.
-   - Derivatives may use any OSI-approved license.
+You may choose to use this work under:
+  1. MIT License - Standard permissive open source license
+  2. AGPL-3.0-or-later - Copyleft license requiring source disclosure for
+     network services
 
-4. NO WARRANTY
-   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-   SOFTWARE.
+For most uses, MIT License provides maximum flexibility.
+For ensuring open source remains open (especially for SaaS/network services),
+AGPL-3.0-or-later provides stronger protections.
 
-5. PHILOSOPHICAL PRINCIPLES
-   This license embodies the concept of "palimpsest" - software as a living
-   document that evolves through layers of modification, each preserving traces
-   of its history. We encourage:
+================================================================================
+PALIMPSEST PHILOSOPHICAL OVERLAY (NON-BINDING)
+================================================================================
 
-   - Transparency in modification history
-   - Respect for previous contributors
-   - Recognition that code is iterative and collaborative
-   - Embrace of software's temporal and evolving nature
+This project encourages (but does not legally require) adherence to the
+principles of the Palimpsest License - a framework for consent-based digital
+interaction and the future web.
 
-=================================================================================
-ADDITIONAL NOTES
-=================================================================================
+Core Principles (Encouraged):
+  - Respect for emotional and creative lineage
+  - Transparent AI training practices with explicit consent
+  - Preservation of metadata and attribution
+  - Protection of narrative intent and cultural context
 
-**Why Dual License?**
+The Palimpsest principles represent our vision for a consent-based internet.
+While not legally binding for use of this software, we encourage all users
+and contributors to familiarize themselves with these principles.
 
-This project uses dual licensing to maximize freedom and compatibility:
+Learn more: https://github.com/hyperpolymath/palimpsest-license
 
-- **MIT License**: Widely recognized, minimal restrictions, corporate-friendly
-- **Palimpsest License**: Emphasizes attribution and philosophical alignment
-  with the iterative, layered nature of software development
-
-**For Contributors:**
-
-By contributing to this project, you agree to license your contributions under
-the same dual license terms (MIT + Palimpsest v0.8).
-
-**For Users:**
-
-You may choose either license. If you need to comply with corporate policies
-that only recognize OSI-approved licenses, use the MIT License. If you appreciate
-the philosophical principles of Palimpsest, you may choose that instead.
-
-**License Selection:**
-
-No action is required. Both licenses grant you permission. Simply comply with
-the terms of whichever license you prefer.
-
-**Attribution Example:**
-
-When using this software, proper attribution might look like:
-
-  "Built with Mobile AI Orchestrator by Jonathan Bowman (Hyperpolymath)
-   https://github.com/Hyperpolymath/heterogenous-mobile-computing
-   Licensed under MIT + Palimpsest v0.8"
-
-=================================================================================
-THIRD-PARTY LICENSES
-=================================================================================
-
-This project uses the following dependencies (Phase 1):
-
-1. **serde** (v1.0)
-   - License: MIT OR Apache-2.0
-   - Copyright: Serde developers
-   - https://github.com/serde-rs/serde
-
-2. **serde_json** (v1.0)
-   - License: MIT OR Apache-2.0
-   - Copyright: Serde developers
-   - https://github.com/serde-rs/json
-
-All dependencies are compatible with MIT licensing.
-
-=================================================================================
+================================================================================
 END OF LICENSE
-=================================================================================
-
-For questions about licensing, contact:
-  Jonathan Bowman <hyperpolymath@protonmail.com>
-
-Last updated: 2025-11-22
+================================================================================
