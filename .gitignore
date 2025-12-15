@@ -1,88 +1,79 @@
-# Rust
-/target/
-**/*.rs.bk
-*.pdb
-Cargo.lock
-# Keep Cargo.lock for binary projects, but gitignore for library projects
-# Uncomment if this becomes a library-only project:
-# !Cargo.lock
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# RSR-compliant .gitignore
 
-# IDEs and Editors
-.vscode/
-.idea/
+# OS & Editor
+.DS_Store
+Thumbs.db
 *.swp
 *.swo
 *~
-.DS_Store
+.idea/
+.vscode/
 
-# Rust-specific
-*.profraw
-*.profdata
-flamegraph.svg
-perf.data*
+# Build
+/target/
+/_build/
+/build/
+/dist/
+/out/
 
-# Testing and Coverage
-target/coverage/
-tarpaulin-report.html
-lcov.info
-*.gcda
-*.gcno
-*.gcov
+# Dependencies
+/node_modules/
+/vendor/
+/deps/
+/.elixir_ls/
 
-# Documentation
+# Rust
+# Cargo.lock  # Keep for binaries
+
+# Elixir
+/cover/
 /doc/
+*.ez
+erl_crash.dump
 
-# Build artifacts
-*.so
-*.dylib
-*.dll
-*.exe
+# Julia
+*.jl.cov
+*.jl.mem
+/Manifest.toml
 
-# Nix
-result
-result-*
-.direnv/
+# ReScript
+/lib/bs/
+/.bsb.lock
 
-# Just task runner
-.just-*
+# Python (SaltStack only)
+__pycache__/
+*.py[cod]
+.venv/
 
-# Environment files
+# Ada/SPARK
+*.ali
+/obj/
+/bin/
+
+# Haskell
+/.stack-work/
+/dist-newstyle/
+
+# Chapel
+*.chpl.tmp.*
+
+# Secrets
 .env
-.env.local
-.env.*.local
+.env.*
+*.pem
+*.key
+secrets/
+
+# Test/Coverage
+/coverage/
+htmlcov/
 
 # Logs
 *.log
-logs/
+/logs/
 
-# OS files
-Thumbs.db
-Desktop.ini
-
-# Temporary files
-tmp/
-temp/
+# Temp
+/tmp/
 *.tmp
-*.temp
-
-# Backup files
 *.bak
-*.backup
-*~
-
-# Local configuration
-config.local.toml
-secrets.toml
-
-# Phase 2+ specific (future)
-models/
-*.gguf
-*.bin
-embeddings/
-*.db
-*.sqlite
-*.sqlite3
-
-# Development
-.cargo/
-.cache/
