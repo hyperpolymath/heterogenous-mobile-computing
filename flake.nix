@@ -85,7 +85,8 @@
           meta = with pkgs.lib; {
             description = "Hybrid AI orchestration system for constrained mobile platforms";
             homepage = "https://github.com/Hyperpolymath/heterogenous-mobile-computing";
-            license = with licenses; [ mit ]; # Note: Also Palimpsest-0.8
+            # Dual-licensed: user may choose either MIT or AGPL-3.0-or-later
+            license = with licenses; [ mit agpl3Plus ];
             maintainers = [{ name = "Jonathan Bowman"; email = "hyperpolymath@protonmail.com"; }];
             platforms = platforms.all;
           };
@@ -112,7 +113,8 @@
           meta = with pkgs.lib; {
             description = "Mobile AI Orchestrator (with network features)";
             homepage = "https://github.com/Hyperpolymath/heterogenous-mobile-computing";
-            license = with licenses; [ mit ];
+            # Dual-licensed: user may choose either MIT or AGPL-3.0-or-later
+            license = with licenses; [ mit agpl3Plus ];
             maintainers = [{ name = "Jonathan Bowman"; email = "hyperpolymath@protonmail.com"; }];
           };
         };

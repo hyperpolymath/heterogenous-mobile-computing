@@ -16,10 +16,13 @@
                         #:recursive? #t
                         #:select? (git-predicate ".")))
     (build-system cargo-build-system)
-    (synopsis "Rust application")
-    (description "Rust application - part of the RSR ecosystem.")
+    (synopsis "Hybrid AI orchestration for constrained mobile platforms")
+    (description "Mobile AI Orchestrator - intelligent AI routing system for
+constrained mobile devices using safety-first, offline-first architecture with
+zero unsafe blocks. Part of the RSR ecosystem.")
     (home-page "https://github.com/hyperpolymath/heterogenous-mobile-computing")
-    (license license:agpl3+)))
+    ;; Dual-licensed: user may choose either MIT or AGPL-3.0-or-later
+    (license (list license:expat license:agpl3+))))
 
 ;; Return package for guix shell
 heterogenous_mobile_computing
