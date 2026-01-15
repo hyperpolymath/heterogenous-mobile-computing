@@ -3,7 +3,7 @@ name = "mobile-ai-orchestrator"
 version = "0.1.0"
 edition = "2021"
 authors = ["Jonathan Bowman <hyperpolymath@protonmail.com>"]
-license = "MIT OR Palimpsest-0.8"
+license = "PMPL-1.0"
 repository = "https://github.com/Hyperpolymath/heterogenous-mobile-computing"
 description = "Hybrid AI orchestration system for constrained mobile platforms with reservoir computing"
 keywords = ["ai", "mobile", "orchestration", "reservoir-computing", "offline-first"]
@@ -17,13 +17,26 @@ serde = { version = "1.0", features = ["derive"] }
 serde_json = { version = "1.0" }
 lazy_static = "1.4"
 rand = "0.8"
+thiserror = "2.0"
 
 # Persistence
 rusqlite = { version = "0.31", features = ["bundled"], optional = true }
 
-# Optional dependencies for future phases
+# Optional: High-performance mode (learned from neurophone)
+# Uses ndarray for optimized matrix operations in reservoir/snn
+ndarray = { version = "0.17", features = ["serde"], optional = true }
+ndarray-rand = { version = "0.16", optional = true }
+rayon = { version = "1.8", optional = true }
+
+# Optional: Structured logging
+tracing = { version = "0.1", optional = true }
+
+# Optional: Fast binary serialization (10x faster than JSON)
+bincode = { version = "1.3", optional = true }
+
+# Optional dependencies for network features
 tokio = { version = "1.35", features = ["rt", "macros", "sync"], optional = true }
-reqwest = { version = "0.11", features = ["json"], optional = true }
+reqwest = { version = "0.12", features = ["json", "rustls-tls"], default-features = false, optional = true }
 
 [dev-dependencies]
 # Test dependencies
@@ -36,6 +49,24 @@ default = ["persistence"]
 network = ["tokio", "reqwest"]
 # Persistence (enabled by default for production use)
 persistence = ["rusqlite"]
+
+# High-performance mode: ndarray + rayon parallelization
+# Enable for real-time sensor processing (1kHz+)
+# Learned from neurophone's optimized reservoir computing
+high-perf = ["ndarray", "ndarray-rand", "rayon"]
+
+# Structured logging with tracing
+logging = ["tracing"]
+
+# Fast binary serialization (replaces JSON for internal state)
+fast-serde = ["bincode"]
+
+# Full-featured mode (all optional features)
+full = ["persistence", "network", "high-perf", "logging", "fast-serde"]
+
+# Android-optimized build (use with --profile release-android)
+android = []
+
 # Phase 2+ features
 reservoir = []
 rag = []
@@ -69,6 +100,15 @@ panic = "abort"     # Smaller binary
 
 [profile.dev]
 opt-level = 1       # Faster compilation in dev
+
+# Android-optimized release profile (learned from neurophone)
+# Use: cargo build --profile release-android --target aarch64-linux-android
+[profile.release-android]
+inherits = "release"
+opt-level = "s"     # Optimize for size (mobile storage constraints)
+lto = "thin"        # Faster linking than full LTO, still good optimization
+strip = true
+panic = "abort"
 
 # RSR Compliance Metadata
 [package.metadata.rsr]

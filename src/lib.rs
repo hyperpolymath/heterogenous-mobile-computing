@@ -22,6 +22,15 @@
 //! - Network features are optional (behind `network` feature flag)
 //! - All core functionality works air-gapped
 //! - Local inference prioritized over API calls
+//!
+//! # Features
+//!
+//! - `persistence` (default): SQLite-backed state persistence
+//! - `network`: Enable tokio + reqwest for cloud API calls
+//! - `high-perf`: ndarray + rayon for optimized matrix operations
+//! - `logging`: Structured logging with tracing
+//! - `fast-serde`: Binary serialization with bincode
+//! - `full`: All features enabled
 
 #![forbid(unsafe_code)]
 #![warn(missing_docs, rust_2018_idioms)]
@@ -33,12 +42,14 @@ pub mod orchestrator;
 pub mod persistence;
 pub mod reservoir;
 pub mod router;
+pub mod sensor;
 pub mod snn;
 pub mod training;
 pub mod types;
 
 pub use orchestrator::Orchestrator;
 pub use reservoir::EchoStateNetwork;
+pub use sensor::{SensorBuffer, SensorReading, SensorType};
 pub use snn::SpikingNetwork;
 pub use types::{Query, Response, RoutingDecision};
 
