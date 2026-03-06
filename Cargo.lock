@@ -91,9 +91,9 @@ checksum = "5dd9dc738b7a8311c7ade152424974d8115f2cdad61e8dab8dac9f2362298510"
 
 [[package]]
 name = "bytes"
-version = "1.11.0"
+version = "1.11.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b35204fbdc0b3f4446b89fc1ac2cf84a8a68971995d0bf2e925ec7cd960f9cb3"
+checksum = "1e748733b7cbc798e1434b6ac524f0c1ff2ab456fe201501e6497c8417a4fc33"
 
 [[package]]
 name = "cast"
@@ -741,7 +741,7 @@ dependencies = [
 
 [[package]]
 name = "mobile-ai-orchestrator"
-version = "0.1.0"
+version = "1.0.0"
 dependencies = [
  "bincode",
  "criterion",
@@ -749,7 +749,6 @@ dependencies = [
  "ndarray",
  "ndarray-rand",
  "proptest",
- "proven",
  "rand 0.8.5",
  "rayon",
  "reqwest",
@@ -939,15 +938,6 @@ dependencies = [
  "rusty-fork",
  "tempfile",
  "unarray",
-]
-
-[[package]]
-name = "proven"
-version = "0.9.0"
-dependencies = [
- "serde",
- "serde_json",
- "thiserror",
 ]
 
 [[package]]
