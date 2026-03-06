@@ -373,3 +373,8 @@ Dual-licensed under:
 ---
 
 *Platform-Agnostic • Offline-First • Zero Unsafe • RSR Bronze Compliant*
+
+
+== Architecture
+
+See link:TOPOLOGY.md[TOPOLOGY.md] for a visual architecture map and completion dashboard.
