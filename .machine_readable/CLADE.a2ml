@@ -1,0 +1,26 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Clade declaration — part of the gv-clade-index registry
+# See: https://github.com/hyperpolymath/gv-clade-index
+
+[identity]
+uuid = "1ba1c30c-93d2-5521-91cf-571cbb77a210"
+primary-forge = "github"
+primary-owner = "hyperpolymath"
+canonical-name = "heterogenous-mobile-computing"
+prefixed-name = "ix-heterogenous-mobile-computing"
+
+[clade]
+primary = "ix"
+secondary = []
+assigned = "2026-03-16"
+rationale = ""
+
+[forges]
+github = "hyperpolymath/heterogenous-mobile-computing"
+gitlab = "hyperpolymath/heterogenous-mobile-computing"
+bitbucket = "hyperpolymath/heterogenous-mobile-computing"
+
+[lineage]
+type = "standalone"
+parent = "Heterogeneous mobile computing research"
+born = "2026-03-16"
