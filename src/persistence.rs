@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
 //! SQLite-based persistence for conversation state and model weights.
 //!
 //! This module provides durable storage for:

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
 //! Reservoir Computing: Echo State Network implementation
 //!
 //! Implements liquid state machines for temporal context compression.

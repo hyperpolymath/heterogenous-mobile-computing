@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
 //! Mobile AI Orchestrator - Command Line Interface
 //!
 //! A simple CLI demonstrating the Phase 1 MVP functionality.

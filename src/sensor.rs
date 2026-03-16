@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
 //! Sensor Input Abstraction
 //!
 //! Platform-agnostic sensor input types for mobile AI orchestration.

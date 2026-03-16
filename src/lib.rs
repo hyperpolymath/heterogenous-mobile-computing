@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
 //! Heterogenous Mobile Computing — Verified AI Framework.
 //!
 //! This crate implements a hybrid AI orchestration system optimized for 

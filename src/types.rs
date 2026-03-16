@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
 //! Core Types — Mobile AI Domain Models.
 //!
 //! This module defines the irredicible data structures used across the 

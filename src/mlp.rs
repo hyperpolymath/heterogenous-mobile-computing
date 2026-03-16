@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
 //! Multi-Layer Perceptron (MLP) — Neural Routing Kernel.
 //!
 //! This module implements a standard feedforward neural network designed 
