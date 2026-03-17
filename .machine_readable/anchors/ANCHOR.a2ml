@@ -1,0 +1,18 @@
+# ⚓ ANCHOR: heterogenous-mobile-computing
+# This is the canonical authority for the heterogenous-mobile-computing repository.
+
+id: "org.hyperpolymath.heterogenous-mobile-computing"
+version: "1.0.0"
+clade: "unknown"
+status: "active"
+
+# SSG Configuration (Unified boj-server build)
+ssg:
+  engine: "casket"
+  output_dir: "public"
+  boj_trigger: true
+  cartridge: "ssg-mcp"
+
+# Relationships
+parents:
+  - "org.hyperpolymath.boj-server"
