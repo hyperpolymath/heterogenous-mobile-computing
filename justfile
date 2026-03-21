@@ -280,3 +280,7 @@ stats:
 # Complete workflow: format, lint, test, build
 all: fmt clippy test release
     @echo "✅ Complete build successful!"
+
+# Run panic-attacker pre-commit scan
+assail:
+    @command -v panic-attack >/dev/null 2>&1 && panic-attack assail . || echo "panic-attack not found — install from https://github.com/hyperpolymath/panic-attacker"
