@@ -1,0 +1,127 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= Mobile AI Orchestrator — EXPLAINME
+:toc: preamble
+:icons: font
+
+This file maps README.adoc claims to their implementation evidence for
+sceptical developers.
+
+== "Platform-agnostic Rust library for intelligent AI routing on constrained devices"
+
+[quote, README.adoc]
+____
+mobile-ai-orchestrator is a platform-agnostic Rust library for intelligent AI
+routing on constrained devices. It decides where and how to run AI inference —
+locally, remotely, or hybrid.
+____
+
+How this is implemented::
+The library crate in link:src/[`src/`] contains the following modules:
+`src/orchestrator.rs` (main coordinator), `src/router.rs` (routing decisions),
+`src/expert.rs` (rule-based safety layer), `src/context.rs` (conversation
+history). These are compiled as a library (`lib.rs` exports the public API).
+The binary crate in the workspace provides the optional CLI tool. The Cargo
+workspace root (`Cargo.toml`) confirms no platform-specific dependencies in
+the default feature set; the `network` feature flag gates all `reqwest` usage.
+
+Caveat::
+Platform-agnostic means no Android/iOS SDK dependencies in the library — not
+that it has been tested on all platforms. Actual Android integration is in the
+companion https://github.com/hyperpolymath/neurophone[neurophone] repo.
+
+== "Zero unsafe blocks"
+
+[quote, README.adoc]
+____
+Safety-First: Zero `unsafe` blocks in entire codebase
+____
+
+How this is implemented::
+The codebase uses only safe Rust. This can be verified via `cargo geiger` or
+by grepping for the `unsafe` keyword: `grep -r "unsafe" src/` returns no
+results in the library crates.
+
+Caveat::
+Transitive dependencies may contain `unsafe` — `cargo geiger` reports those
+separately. The library's own code contains zero `unsafe`.
+
+== "Expert system + reservoir computing + MLP + SNN"
+
+[quote, README.adoc]
+____
+Neural Components: Reservoir Computing (ESN), Multi-Layer Perceptron,
+Spiking Neural Network
+____
+
+How this is implemented::
+`src/reservoir.rs` implements an Echo State Network for temporal compression
+of conversation history. `src/mlp.rs` implements a simple feed-forward network
+for learned routing decisions. `src/snn.rs` implements a spiking neural network
+for wake-word detection. All three are pure Rust, no external ML frameworks.
+
+Caveat::
+These are lightweight in-process implementations, not production ML models.
+The reservoir has fixed dimensions (configured in `OrchestratorConfig`); the
+MLP weights are not pre-trained and require a training step before learned
+routing outperforms the heuristic baseline.
+
+== "Automatic sensitive data detection"
+
+[quote, README.adoc]
+____
+Privacy-Preserving: Automatic detection of sensitive data patterns.
+Configurable blocking rules.
+____
+
+How this is implemented::
+`src/expert.rs` implements rule-based safety. The `block_patterns` field in
+`OrchestratorConfig` accepts a `Vec<String>` of regex patterns (e.g.
+`r"password|secret|api.?key"`). The expert system applies these patterns to
+query text before routing; matches return `Route::Blocked` with a reason
+string.
+
+Caveat::
+Pattern matching is regex-based and language-agnostic — it will not detect
+sensitive data expressed in unusual encodings (base64, ROT13, etc.). For
+high-assurance privacy, the blocking rules must be configured carefully by the
+integrating application.
+
+== Dogfooded Across The Account
+
+[cols="1,2,2", options="header"]
+|===
+| Technology / Pattern | Used here | Also used in
+
+| Rust library crate
+| AI routing logic as reusable library
+| link:https://github.com/hyperpolymath/k9-rs[k9-rs],
+  link:https://github.com/hyperpolymath/launch-scaffolder[launch-scaffolder]
+
+| Feature-gated network support
+| `features = ["network"]` for optional HTTP
+| link:https://github.com/hyperpolymath/a2ml-rs[a2ml-rs]
+
+| Reservoir computing (ESN)
+| Temporal compression for context history
+| Unique to this repo in the estate
+
+| Rule-based safety expert system
+| Privacy pattern blocking
+| link:https://github.com/hyperpolymath/hypatia[hypatia]
+  (rule-module architecture)
+|===
+
+== Known Gaps
+
+[CAUTION]
+====
+The `.machine_readable/6a2/` A2ML checkpoint files (STATE, META, ECOSYSTEM)
+are the canonical metadata location for this repo. The older `.machine_readable/`
+SCM files referenced in some docs should be treated as superseded.
+====
+
+The MLP weights are not pre-trained — the learned routing component requires
+integration of a training pipeline before it can outperform the heuristic
+baseline. The README is honest that the neural components are "optional
+enhancements over the heuristic baseline."
