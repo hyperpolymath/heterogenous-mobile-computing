@@ -3,6 +3,8 @@
 # List all recipes: just --list
 
 # Default recipe (runs when you just type 'just')
+import? "contractile.just"
+
 default: check
 
 # Display this help message
