@@ -40,7 +40,7 @@ fn main() {
     let query3 = Query::new("What did we discuss about lifetimes?");
     match orch.process(query3) {
         Ok(response) => {
-            println!("Project: {}", orch.current_project().unwrap());
+            println!("Project: {}", orch.current_project().expect("TODO: handle error"));
             println!("Response: {}", response.text);
         }
         Err(e) => println!("Error: {}", e),

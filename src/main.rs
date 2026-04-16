@@ -96,7 +96,7 @@ fn run_interactive() {
 
     loop {
         print!("> ");
-        io::stdout().flush().unwrap();
+        io::stdout().flush().expect("TODO: handle error");
 
         let mut input = String::new();
         if io::stdin().read_line(&mut input).is_err() {
