@@ -11,11 +11,11 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
-      - uses: dtolnay/rust-toolchain@4be9e76fd7c4901c61fb841f559994984270fce7 # stable
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: dtolnay/rust-toolchain@3c5f7ea28cd621ae0bf5283f0e981fb97b8a7af9 # stable
         with:
           components: rustfmt, clippy
-      - uses: Swatinem/rust-cache@779680da715d629ac1d338a641029a2f4372abb5 # v2
+      - uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4 # v2
       
       - name: Check formatting
         run: cargo fmt --all -- --check
@@ -32,8 +32,8 @@ jobs:
   security:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
-      - uses: dtolnay/rust-toolchain@4be9e76fd7c4901c61fb841f559994984270fce7 # stable
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: dtolnay/rust-toolchain@3c5f7ea28cd621ae0bf5283f0e981fb97b8a7af9 # stable
       - name: Install cargo-audit
         run: cargo install cargo-audit
       - name: Security audit
@@ -44,12 +44,12 @@ jobs:
   coverage:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
-      - uses: dtolnay/rust-toolchain@4be9e76fd7c4901c61fb841f559994984270fce7 # stable
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: dtolnay/rust-toolchain@3c5f7ea28cd621ae0bf5283f0e981fb97b8a7af9 # stable
       - name: Install tarpaulin
         run: cargo install cargo-tarpaulin
       - name: Generate coverage
         run: cargo tarpaulin --out Xml
-      - uses: codecov/codecov-action@ab904c41d6ece82784817410c45d8b8c02684457 # v3
+      - uses: codecov/codecov-action@57e3a136b779b570ffcdbf80b3bdc90e7fab3de2 # v6.0.0
         with:
           files: cobertura.xml
