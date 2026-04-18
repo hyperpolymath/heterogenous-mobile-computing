@@ -263,7 +263,7 @@ cargo build --release
 # 6. Documentation
 cargo doc --no-deps
 
-# 7. Full validation (using justfile)
+# 7. Full validation (using Justfile)
 just validate
 
 # 8. RSR compliance report

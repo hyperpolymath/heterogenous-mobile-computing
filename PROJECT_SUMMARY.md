@@ -546,7 +546,7 @@ heterogenous-mobile-computing/
 │   ├── ai.txt              # AI training policy
 │   └── humans.txt          # Team info
 ├── Cargo.toml              # Rust package config
-├── justfile                # Task automation (40+ recipes)
+├── Justfile                # Task automation (40+ recipes)
 ├── flake.nix               # Nix reproducible builds
 ├── .gitlab-ci.yml          # CI/CD pipeline
 ├── .gitignore              # Git ignore rules
