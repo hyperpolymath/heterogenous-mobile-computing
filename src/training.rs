@@ -521,7 +521,7 @@ mod tests {
         let mut esn = EchoStateNetwork::new(10, 100, 5, 0.7, 0.95);
 
         let trainer = ReservoirTrainer::new(0.01);
-        let mse = trainer.train(&mut esn, &inputs, &targets).expect("TODO: handle error");
+        let mse = trainer.train(&mut esn, &inputs, &targets).unwrap();
 
         // Should learn with reasonable error
         assert!(mse < 1.0);

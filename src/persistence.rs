@@ -360,14 +360,17 @@ impl ConversationTurn {
     fn from_row(row: &rusqlite::Row) -> Self {
         use crate::types::{Query, Response, RoutingDecision, ResponseMetadata};
 
-        let query_text: String = row.get(0).expect("TODO: handle error");
-        let query_priority: u8 = row.get(1).expect("TODO: handle error");
-        let query_timestamp: u64 = row.get(2).expect("TODO: handle error");
+        // Schema invariant: columns 0-6 are guaranteed present by the
+        // CREATE TABLE statement that produced this row; absence indicates
+        // DB corruption, not a recoverable runtime error.
+        let query_text: String = row.get(0).expect("schema invariant: column 0 (query_text) must exist");
+        let query_priority: u8 = row.get(1).expect("schema invariant: column 1 (query_priority) must exist");
+        let query_timestamp: u64 = row.get(2).expect("schema invariant: column 2 (query_timestamp) must exist");
 
-        let response_text: String = row.get(3).expect("TODO: handle error");
-        let response_route_str: String = row.get(4).expect("TODO: handle error");
-        let response_confidence: f32 = row.get(5).expect("TODO: handle error");
-        let latency_ms: i64 = row.get(6).expect("TODO: handle error");
+        let response_text: String = row.get(3).expect("schema invariant: column 3 (response_text) must exist");
+        let response_route_str: String = row.get(4).expect("schema invariant: column 4 (response_route_str) must exist");
+        let response_confidence: f32 = row.get(5).expect("schema invariant: column 5 (response_confidence) must exist");
+        let latency_ms: i64 = row.get(6).expect("schema invariant: column 6 (latency_ms) must exist");
 
         // Parse routing decision
         let route = match response_route_str.as_str() {
@@ -403,7 +406,7 @@ impl ConversationTurn {
 fn current_timestamp() -> u64 {
     std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
-        .expect("TODO: handle error")
+        .expect("system clock invariant: time is after UNIX_EPOCH (1970-01-01)")
         .as_secs()
 }
 
@@ -429,13 +432,13 @@ mod tests {
 
     #[test]
     fn test_persistence_manager_creation() {
-        let pm = PersistenceManager::new_in_memory().expect("TODO: handle error");
-        assert_eq!(pm.conversation_count(None).expect("TODO: handle error"), 0);
+        let pm = PersistenceManager::new_in_memory().unwrap();
+        assert_eq!(pm.conversation_count(None).unwrap(), 0);
     }
 
     #[test]
     fn test_save_and_load_turn() {
-        let pm = PersistenceManager::new_in_memory().expect("TODO: handle error");
+        let pm = PersistenceManager::new_in_memory().unwrap();
 
         let query = Query::new("What is Rust?");
         let response = Response {
@@ -455,9 +458,9 @@ mod tests {
             response: response.clone(),
         };
 
-        pm.save_turn(None, &turn).expect("TODO: handle error");
+        pm.save_turn(None, &turn).unwrap();
 
-        let history = pm.load_history(None, 10).expect("TODO: handle error");
+        let history = pm.load_history(None, 10).unwrap();
         assert_eq!(history.len(), 1);
         assert_eq!(history[0].query.text, query.text);
         assert_eq!(history[0].response.text, response.text);
@@ -465,7 +468,7 @@ mod tests {
 
     #[test]
     fn test_project_isolation() {
-        let pm = PersistenceManager::new_in_memory().expect("TODO: handle error");
+        let pm = PersistenceManager::new_in_memory().unwrap();
 
         let turn1 = ConversationTurn {
             query: Query::new("Project A query"),
@@ -497,11 +500,11 @@ mod tests {
             },
         };
 
-        pm.save_turn(Some("project_a"), &turn1).expect("TODO: handle error");
-        pm.save_turn(Some("project_b"), &turn2).expect("TODO: handle error");
+        pm.save_turn(Some("project_a"), &turn1).unwrap();
+        pm.save_turn(Some("project_b"), &turn2).unwrap();
 
-        let history_a = pm.load_history(Some("project_a"), 10).expect("TODO: handle error");
-        let history_b = pm.load_history(Some("project_b"), 10).expect("TODO: handle error");
+        let history_a = pm.load_history(Some("project_a"), 10).unwrap();
+        let history_b = pm.load_history(Some("project_b"), 10).unwrap();
 
         assert_eq!(history_a.len(), 1);
         assert_eq!(history_b.len(), 1);
@@ -511,7 +514,7 @@ mod tests {
 
     #[test]
     fn test_reservoir_persistence() {
-        let pm = PersistenceManager::new_in_memory().expect("TODO: handle error");
+        let pm = PersistenceManager::new_in_memory().unwrap();
 
         let mut esn = EchoStateNetwork::new(384, 1000, 100, 0.7, 0.95);
 
@@ -519,29 +522,29 @@ mod tests {
         let input = vec![0.5; 384];
         esn.update(&input);
 
-        pm.save_reservoir_state(Some("test_project"), &esn).expect("TODO: handle error");
+        pm.save_reservoir_state(Some("test_project"), &esn).unwrap();
 
-        let loaded = pm.load_reservoir_state(Some("test_project")).expect("TODO: handle error");
+        let loaded = pm.load_reservoir_state(Some("test_project")).unwrap();
         assert!(loaded.is_some());
 
         // Verify we can use the loaded ESN
-        let mut loaded_esn = loaded.expect("TODO: handle error");
+        let mut loaded_esn = loaded.unwrap();
         let output = loaded_esn.output();
         assert_eq!(output.len(), 100);
     }
 
     #[test]
     fn test_mlp_persistence() {
-        let pm = PersistenceManager::new_in_memory().expect("TODO: handle error");
+        let pm = PersistenceManager::new_in_memory().unwrap();
 
         let mlp = MLP::new(384, vec![100, 50], 3);
-        pm.save_mlp("router", &mlp, Some(0.85)).expect("TODO: handle error");
+        pm.save_mlp("router", &mlp, Some(0.85)).unwrap();
 
-        let loaded = pm.load_mlp("router").expect("TODO: handle error");
+        let loaded = pm.load_mlp("router").unwrap();
         assert!(loaded.is_some());
 
         // Verify we can use the loaded MLP
-        let loaded_mlp = loaded.expect("TODO: handle error");
+        let loaded_mlp = loaded.unwrap();
         let input = vec![0.5; 384];
         let output = loaded_mlp.forward(&input);
         assert_eq!(output.len(), 3);
@@ -549,7 +552,7 @@ mod tests {
 
     #[test]
     fn test_clear_history() {
-        let pm = PersistenceManager::new_in_memory().expect("TODO: handle error");
+        let pm = PersistenceManager::new_in_memory().unwrap();
 
         for i in 0..10 {
             let turn = ConversationTurn {
@@ -566,18 +569,18 @@ mod tests {
                     },
                 },
             };
-            pm.save_turn(None, &turn).expect("TODO: handle error");
+            pm.save_turn(None, &turn).unwrap();
         }
 
-        assert_eq!(pm.conversation_count(None).expect("TODO: handle error"), 10);
+        assert_eq!(pm.conversation_count(None).unwrap(), 10);
 
-        pm.clear_history(None).expect("TODO: handle error");
-        assert_eq!(pm.conversation_count(None).expect("TODO: handle error"), 0);
+        pm.clear_history(None).unwrap();
+        assert_eq!(pm.conversation_count(None).unwrap(), 0);
     }
 
     #[test]
     fn test_history_limit() {
-        let pm = PersistenceManager::new_in_memory().expect("TODO: handle error");
+        let pm = PersistenceManager::new_in_memory().unwrap();
 
         let base_timestamp = current_timestamp();
         for i in 0..100 {
@@ -599,10 +602,10 @@ mod tests {
                     },
                 },
             };
-            pm.save_turn(None, &turn).expect("TODO: handle error");
+            pm.save_turn(None, &turn).unwrap();
         }
 
-        let history = pm.load_history(None, 10).expect("TODO: handle error");
+        let history = pm.load_history(None, 10).unwrap();
         assert_eq!(history.len(), 10);
 
         // Should get most recent 10 (90-99) in chronological order (oldest first)

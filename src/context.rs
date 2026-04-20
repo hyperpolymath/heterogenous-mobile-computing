@@ -247,7 +247,7 @@ mod tests {
 
         let history = cm.project_history("project-1");
         assert!(history.is_some());
-        assert_eq!(history.expect("TODO: handle error").len(), 1);
+        assert_eq!(history.unwrap().len(), 1);
     }
 
     #[test]
@@ -289,8 +289,8 @@ mod tests {
         let response = create_test_response("test response");
         cm.add_turn(query, response);
 
-        let json = cm.to_json().expect("TODO: handle error");
-        let restored = ContextManager::from_json(&json).expect("TODO: handle error");
+        let json = cm.to_json().unwrap();
+        let restored = ContextManager::from_json(&json).unwrap();
 
         assert_eq!(restored.current_project(), cm.current_project());
         assert_eq!(restored.conversation_count(), cm.conversation_count());
@@ -333,7 +333,7 @@ mod tests {
         // Reservoir state should initially be zeros
         let state1 = cm.reservoir_state();
         assert!(state1.is_some());
-        assert_eq!(state1.as_ref().expect("TODO: handle error").len(), 1000);
+        assert_eq!(state1.as_ref().unwrap().len(), 1000);
 
         // Add a turn - reservoir should update
         cm.add_turn(Query::new("Hello world"), create_test_response("Hi"));
@@ -347,7 +347,7 @@ mod tests {
         // Snapshot should include reservoir state
         let snapshot = cm.snapshot(5);
         assert!(snapshot.reservoir_state.is_some());
-        assert_eq!(snapshot.reservoir_state.expect("TODO: handle error").len(), 1000);
+        assert_eq!(snapshot.reservoir_state.unwrap().len(), 1000);
     }
 
     #[test]
@@ -356,12 +356,12 @@ mod tests {
 
         cm.add_turn(Query::new("test"), create_test_response("response"));
 
-        let state = cm.reservoir_state().expect("TODO: handle error");
+        let state = cm.reservoir_state().unwrap();
         assert!(!state.iter().all(|&x| x == 0.0));
 
         cm.reset_reservoir();
 
-        let state_after_reset = cm.reservoir_state().expect("TODO: handle error");
+        let state_after_reset = cm.reservoir_state().unwrap();
         assert!(state_after_reset.iter().all(|&x| x == 0.0));
     }
 

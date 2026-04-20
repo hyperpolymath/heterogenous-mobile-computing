@@ -73,9 +73,13 @@ fn main() {
 
     // Example 4: Reset and Restart
     println!("\n=== Example 4: Reset Reservoir ===");
-    println!("State norm before reset: {:.4}", vector_norm(&cm.reservoir_state().expect("TODO: handle error")));
+    if let Some(state) = cm.reservoir_state() {
+        println!("State norm before reset: {:.4}", vector_norm(&state));
+    }
     cm.reset_reservoir();
-    println!("State norm after reset: {:.4}", vector_norm(&cm.reservoir_state().expect("TODO: handle error")));
+    if let Some(state) = cm.reservoir_state() {
+        println!("State norm after reset: {:.4}", vector_norm(&state));
+    }
 
     println!("\n✅ Reservoir demo completed!");
 }

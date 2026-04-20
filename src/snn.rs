@@ -314,7 +314,7 @@ mod tests {
     #[test]
     fn test_spiking_network_serialization() {
         let snn = SpikingNetwork::new(10, 20, 3);
-        let json = serde_json::to_string(&snn).expect("TODO: handle error");
-        let _deserialized: SpikingNetwork = serde_json::from_str(&json).expect("TODO: handle error");
+        let json = serde_json::to_string(&snn).unwrap();
+        let _deserialized: SpikingNetwork = serde_json::from_str(&json).unwrap();
     }
 }

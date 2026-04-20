@@ -96,7 +96,9 @@ fn run_interactive() {
 
     loop {
         print!("> ");
-        io::stdout().flush().expect("TODO: handle error");
+        // Best-effort flush of the prompt; if stdout is closed the next
+        // read_line() will fail and the loop will exit cleanly.
+        let _ = io::stdout().flush();
 
         let mut input = String::new();
         if io::stdin().read_line(&mut input).is_err() {
