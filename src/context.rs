@@ -247,7 +247,10 @@ mod tests {
 
         let history = cm.project_history("project-1");
         assert!(history.is_some());
-        assert_eq!(history.unwrap().len(), 1);
+        let Some(h) = history else {
+            panic!("project_history should return Some after adding turn");
+        };
+        assert_eq!(h.len(), 1);
     }
 
     #[test]
@@ -289,8 +292,12 @@ mod tests {
         let response = create_test_response("test response");
         cm.add_turn(query, response);
 
-        let json = cm.to_json().unwrap();
-        let restored = ContextManager::from_json(&json).unwrap();
+        let Ok(json) = cm.to_json() else {
+            panic!("to_json should succeed with valid ContextManager");
+        };
+        let Ok(restored) = ContextManager::from_json(&json) else {
+            panic!("from_json should succeed with valid JSON");
+        };
 
         assert_eq!(restored.current_project(), cm.current_project());
         assert_eq!(restored.conversation_count(), cm.conversation_count());
@@ -333,7 +340,10 @@ mod tests {
         // Reservoir state should initially be zeros
         let state1 = cm.reservoir_state();
         assert!(state1.is_some());
-        assert_eq!(state1.as_ref().unwrap().len(), 1000);
+        let Some(ref s1) = state1 else {
+            panic!("reservoir_state should return Some when reservoir enabled");
+        };
+        assert_eq!(s1.len(), 1000);
 
         // Add a turn - reservoir should update
         cm.add_turn(Query::new("Hello world"), create_test_response("Hi"));
@@ -347,7 +357,10 @@ mod tests {
         // Snapshot should include reservoir state
         let snapshot = cm.snapshot(5);
         assert!(snapshot.reservoir_state.is_some());
-        assert_eq!(snapshot.reservoir_state.unwrap().len(), 1000);
+        let Some(ref rs) = snapshot.reservoir_state else {
+            panic!("snapshot.reservoir_state should return Some when reservoir enabled");
+        };
+        assert_eq!(rs.len(), 1000);
     }
 
     #[test]
@@ -356,12 +369,16 @@ mod tests {
 
         cm.add_turn(Query::new("test"), create_test_response("response"));
 
-        let state = cm.reservoir_state().unwrap();
+        let Some(state) = cm.reservoir_state() else {
+            panic!("reservoir_state should return Some when reservoir enabled");
+        };
         assert!(!state.iter().all(|&x| x == 0.0));
 
         cm.reset_reservoir();
 
-        let state_after_reset = cm.reservoir_state().unwrap();
+        let Some(state_after_reset) = cm.reservoir_state() else {
+            panic!("reservoir_state should return Some when reservoir enabled");
+        };
         assert!(state_after_reset.iter().all(|&x| x == 0.0));
     }
 

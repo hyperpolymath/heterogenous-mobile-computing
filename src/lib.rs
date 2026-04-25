@@ -25,8 +25,10 @@ pub mod expert;
 pub mod mlp;
 pub mod orchestrator;
 pub mod persistence;
+pub mod reservoir;
 pub mod router;
 pub mod snn;
+pub mod training;
 pub mod types;
 
 // RE-EXPORTS: Primary types for mobile application integration.

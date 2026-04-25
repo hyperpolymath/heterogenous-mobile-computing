@@ -379,8 +379,12 @@ mod tests {
         let esn = EchoStateNetwork::new(10, 50, 5, 0.7, 0.95);
 
         // Should be serializable
-        let json = serde_json::to_string(&esn).unwrap();
-        let deserialized: EchoStateNetwork = serde_json::from_str(&json).unwrap();
+        let Ok(json) = serde_json::to_string(&esn) else {
+            panic!("to_string should succeed for serializable ESN");
+        };
+        let Ok(deserialized) = serde_json::from_str::<EchoStateNetwork>(&json) else {
+            panic!("from_str should succeed for valid JSON");
+        };
 
         assert_eq!(esn.reservoir_size, deserialized.reservoir_size);
         assert_eq!(esn.state, deserialized.state);

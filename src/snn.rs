@@ -314,7 +314,11 @@ mod tests {
     #[test]
     fn test_spiking_network_serialization() {
         let snn = SpikingNetwork::new(10, 20, 3);
-        let json = serde_json::to_string(&snn).unwrap();
-        let _deserialized: SpikingNetwork = serde_json::from_str(&json).unwrap();
+        let Ok(json) = serde_json::to_string(&snn) else {
+            panic!("to_string should succeed for serializable SNN");
+        };
+        let Ok(_deserialized) = serde_json::from_str::<SpikingNetwork>(&json) else {
+            panic!("from_str should succeed for valid JSON");
+        };
     }
 }

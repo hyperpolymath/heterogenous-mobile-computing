@@ -432,13 +432,20 @@ mod tests {
 
     #[test]
     fn test_persistence_manager_creation() {
-        let pm = PersistenceManager::new_in_memory().unwrap();
-        assert_eq!(pm.conversation_count(None).unwrap(), 0);
+        let Ok(pm) = PersistenceManager::new_in_memory() else {
+            panic!("new_in_memory should succeed");
+        };
+        let Ok(count) = pm.conversation_count(None) else {
+            panic!("conversation_count should succeed");
+        };
+        assert_eq!(count, 0);
     }
 
     #[test]
     fn test_save_and_load_turn() {
-        let pm = PersistenceManager::new_in_memory().unwrap();
+        let Ok(pm) = PersistenceManager::new_in_memory() else {
+            panic!("new_in_memory should succeed");
+        };
 
         let query = Query::new("What is Rust?");
         let response = Response {
@@ -458,9 +465,13 @@ mod tests {
             response: response.clone(),
         };
 
-        pm.save_turn(None, &turn).unwrap();
+        let Ok(_) = pm.save_turn(None, &turn) else {
+            panic!("save_turn should succeed");
+        };
 
-        let history = pm.load_history(None, 10).unwrap();
+        let Ok(history) = pm.load_history(None, 10) else {
+            panic!("load_history should succeed");
+        };
         assert_eq!(history.len(), 1);
         assert_eq!(history[0].query.text, query.text);
         assert_eq!(history[0].response.text, response.text);
@@ -468,7 +479,9 @@ mod tests {
 
     #[test]
     fn test_project_isolation() {
-        let pm = PersistenceManager::new_in_memory().unwrap();
+        let Ok(pm) = PersistenceManager::new_in_memory() else {
+            panic!("new_in_memory should succeed");
+        };
 
         let turn1 = ConversationTurn {
             query: Query::new("Project A query"),
@@ -500,11 +513,19 @@ mod tests {
             },
         };
 
-        pm.save_turn(Some("project_a"), &turn1).unwrap();
-        pm.save_turn(Some("project_b"), &turn2).unwrap();
+        let Ok(_) = pm.save_turn(Some("project_a"), &turn1) else {
+            panic!("save_turn should succeed");
+        };
+        let Ok(_) = pm.save_turn(Some("project_b"), &turn2) else {
+            panic!("save_turn should succeed");
+        };
 
-        let history_a = pm.load_history(Some("project_a"), 10).unwrap();
-        let history_b = pm.load_history(Some("project_b"), 10).unwrap();
+        let Ok(history_a) = pm.load_history(Some("project_a"), 10) else {
+            panic!("load_history should succeed");
+        };
+        let Ok(history_b) = pm.load_history(Some("project_b"), 10) else {
+            panic!("load_history should succeed");
+        };
 
         assert_eq!(history_a.len(), 1);
         assert_eq!(history_b.len(), 1);
@@ -514,7 +535,9 @@ mod tests {
 
     #[test]
     fn test_reservoir_persistence() {
-        let pm = PersistenceManager::new_in_memory().unwrap();
+        let Ok(pm) = PersistenceManager::new_in_memory() else {
+            panic!("new_in_memory should succeed");
+        };
 
         let mut esn = EchoStateNetwork::new(384, 1000, 100, 0.7, 0.95);
 
@@ -522,29 +545,43 @@ mod tests {
         let input = vec![0.5; 384];
         esn.update(&input);
 
-        pm.save_reservoir_state(Some("test_project"), &esn).unwrap();
+        let Ok(_) = pm.save_reservoir_state(Some("test_project"), &esn) else {
+            panic!("save_reservoir_state should succeed");
+        };
 
-        let loaded = pm.load_reservoir_state(Some("test_project")).unwrap();
+        let Ok(loaded) = pm.load_reservoir_state(Some("test_project")) else {
+            panic!("load_reservoir_state should succeed");
+        };
         assert!(loaded.is_some());
 
         // Verify we can use the loaded ESN
-        let mut loaded_esn = loaded.unwrap();
+        let Some(loaded_esn) = loaded else {
+            panic!("loaded should be Some");
+        };
         let output = loaded_esn.output();
         assert_eq!(output.len(), 100);
     }
 
     #[test]
     fn test_mlp_persistence() {
-        let pm = PersistenceManager::new_in_memory().unwrap();
+        let Ok(pm) = PersistenceManager::new_in_memory() else {
+            panic!("new_in_memory should succeed");
+        };
 
         let mlp = MLP::new(384, vec![100, 50], 3);
-        pm.save_mlp("router", &mlp, Some(0.85)).unwrap();
+        let Ok(_) = pm.save_mlp("router", &mlp, Some(0.85)) else {
+            panic!("save_mlp should succeed");
+        };
 
-        let loaded = pm.load_mlp("router").unwrap();
+        let Ok(loaded) = pm.load_mlp("router") else {
+            panic!("load_mlp should succeed");
+        };
         assert!(loaded.is_some());
 
         // Verify we can use the loaded MLP
-        let loaded_mlp = loaded.unwrap();
+        let Some(loaded_mlp) = loaded else {
+            panic!("loaded should be Some");
+        };
         let input = vec![0.5; 384];
         let output = loaded_mlp.forward(&input);
         assert_eq!(output.len(), 3);
@@ -552,7 +589,9 @@ mod tests {
 
     #[test]
     fn test_clear_history() {
-        let pm = PersistenceManager::new_in_memory().unwrap();
+        let Ok(pm) = PersistenceManager::new_in_memory() else {
+            panic!("new_in_memory should succeed");
+        };
 
         for i in 0..10 {
             let turn = ConversationTurn {
@@ -569,18 +608,30 @@ mod tests {
                     },
                 },
             };
-            pm.save_turn(None, &turn).unwrap();
+            let Ok(_) = pm.save_turn(None, &turn) else {
+                panic!("save_turn should succeed");
+            };
         }
 
-        assert_eq!(pm.conversation_count(None).unwrap(), 10);
+        let Ok(count) = pm.conversation_count(None) else {
+            panic!("conversation_count should succeed");
+        };
+        assert_eq!(count, 10);
 
-        pm.clear_history(None).unwrap();
-        assert_eq!(pm.conversation_count(None).unwrap(), 0);
+        let Ok(_) = pm.clear_history(None) else {
+            panic!("clear_history should succeed");
+        };
+        let Ok(count_after) = pm.conversation_count(None) else {
+            panic!("conversation_count should succeed");
+        };
+        assert_eq!(count_after, 0);
     }
 
     #[test]
     fn test_history_limit() {
-        let pm = PersistenceManager::new_in_memory().unwrap();
+        let Ok(pm) = PersistenceManager::new_in_memory() else {
+            panic!("new_in_memory should succeed");
+        };
 
         let base_timestamp = current_timestamp();
         for i in 0..100 {
@@ -602,10 +653,14 @@ mod tests {
                     },
                 },
             };
-            pm.save_turn(None, &turn).unwrap();
+            let Ok(_) = pm.save_turn(None, &turn) else {
+                panic!("save_turn should succeed");
+            };
         }
 
-        let history = pm.load_history(None, 10).unwrap();
+        let Ok(history) = pm.load_history(None, 10) else {
+            panic!("load_history should succeed");
+        };
         assert_eq!(history.len(), 10);
 
         // Should get most recent 10 (90-99) in chronological order (oldest first)

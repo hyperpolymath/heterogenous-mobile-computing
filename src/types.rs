@@ -6,6 +6,7 @@
 //! serialization (`serde`) and memory-efficient transfer on mobile hardware.
 
 use serde::{Deserialize, Serialize};
+use std::time::{SystemTime, UNIX_EPOCH};
 
 /// QUERY: Represents a single user request.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
@@ -14,6 +15,23 @@ pub struct Query {
     pub project_context: Option<String>,
     pub priority: u8, // Scale of 1-10
     pub timestamp: u64,
+}
+
+impl Query {
+    /// Create a new query with default priority and current timestamp.
+    pub fn new(text: impl Into<String>) -> Self {
+        let timestamp = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .expect("system clock invariant: time is after UNIX_EPOCH (1970-01-01)")
+            .as_secs();
+
+        Self {
+            text: text.into(),
+            project_context: None,
+            priority: 5,
+            timestamp,
+        }
+    }
 }
 
 /// RESPONSE: The final output produced by the orchestrator.
@@ -41,4 +59,27 @@ pub struct RuleEvaluation {
     pub allowed: bool,
     pub reason: Option<String>,
     pub rule_id: Option<String>,
+}
+
+/// CONVERSATION TURN: A paired query-response interaction.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct ConversationTurn {
+    pub query: Query,
+    pub response: Response,
+}
+
+/// RESPONSE METADATA: Additional information about how a response was produced.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct ResponseMetadata {
+    pub model: Option<String>,
+    pub tokens: Option<u32>,
+    pub cached: bool,
+}
+
+/// CONTEXT SNAPSHOT: A frozen state of the conversation context.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ContextSnapshot {
+    pub project: Option<String>,
+    pub history: Vec<ConversationTurn>,
+    pub reservoir_state: Option<Vec<f32>>,
 }
