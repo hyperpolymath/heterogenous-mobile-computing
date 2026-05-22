@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 //! Context Manager: Conversation state and history management
 //!
 //! Phase 1: Simple in-memory storage with serialization

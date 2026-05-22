@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 //! Router — Intelligence-Driven Query Dispatcher.
 //!
 //! This module implements the "Decision Kernel" for the mobile AI system. 

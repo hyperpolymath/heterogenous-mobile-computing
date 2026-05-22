@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 //! Expert System — Deterministic Safety and Policy Enforcement.
 //!
 //! This module implements the "Guardrail" layer of the mobile AI system.

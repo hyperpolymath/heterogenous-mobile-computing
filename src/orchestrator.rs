@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 //! Orchestrator — Mobile AI Coordination Layer.
 //!
 //! This module implements the central pipeline for on-device AI decision

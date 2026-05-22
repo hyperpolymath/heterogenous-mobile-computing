@@ -10,7 +10,7 @@
   title = {heterogenous-mobile-computing},
   year = {2025},
   url = {https://github.com/hyperpolymath/heterogenous-mobile-computing},
-  license = {PMPL-1.0-or-later}
+  license = {MPL-2.0}
 }
 ----
 
