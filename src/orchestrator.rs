@@ -18,7 +18,7 @@ use crate::{
     context::ContextManager,
     expert::ExpertSystem,
     router::{Router, RouterConfig},
-    types::{Query, Response, ResponseMetadata, RoutingDecision},
+    types::{ConversationTurn, Query, Response, ResponseMetadata, RoutingDecision},
 };
 
 /// Orchestrator: Coordinates the full AI pipeline.
@@ -81,6 +81,21 @@ impl Orchestrator {
         self.context.add_turn(query, response.clone());
 
         Ok(response)
+    }
+
+    /// Set the active project on the underlying ContextManager.
+    pub fn switch_project(&mut self, project: impl Into<String>) {
+        self.context.switch_project(project);
+    }
+
+    /// Drop the active project's conversation history.
+    pub fn clear_history(&mut self) {
+        self.context.clear_history();
+    }
+
+    /// Borrow the N most recent turns from the active project's history.
+    pub fn recent_history(&self, n: usize) -> Vec<ConversationTurn> {
+        self.context.recent_history(n)
     }
 }
 
