@@ -88,6 +88,11 @@ impl Orchestrator {
         self.context.switch_project(project);
     }
 
+    /// Borrow the active project name, if one is set.
+    pub fn current_project(&self) -> Option<&str> {
+        self.context.current_project()
+    }
+
     /// Drop the active project's conversation history.
     pub fn clear_history(&mut self) {
         self.context.clear_history();
