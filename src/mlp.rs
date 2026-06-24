@@ -146,6 +146,24 @@ impl MLP {
         // Phase 2 implementation
     }
 
+    /// Number of input features the network expects.
+    pub fn input_size(&self) -> usize {
+        self.input_size
+    }
+
+    /// Number of output classes the network produces.
+    pub fn output_size(&self) -> usize {
+        self.output_size
+    }
+
+    /// Run one training step: compute loss and gradients via `backward`,
+    /// apply them with `update`, and return the loss for this step.
+    pub fn train_step(&mut self, input: &[f32], target: &[f32], learning_rate: f32) -> f32 {
+        let (loss, gradients) = self.backward(input, target);
+        self.update(&gradients, learning_rate);
+        loss
+    }
+
     /// Argmax: Return the index of the maximum value.
     pub fn argmax(values: &[f32]) -> usize {
         values
