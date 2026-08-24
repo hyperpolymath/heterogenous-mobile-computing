@@ -1,61 +1,72 @@
-# Performance Optimization Guide
+== Performance Optimization Guide
 
-Comprehensive guide to optimizing the Mobile AI Orchestrator for constrained mobile platforms.
+Comprehensive guide to optimizing the Mobile AI Orchestrator for
+constrained mobile platforms.
 
----
+'''''
 
-## Table of Contents
+=== Table of Contents
 
-1. [Performance Targets](#targets)
-2. [Profiling and Measurement](#profiling)
-3. [CPU Optimization](#cpu-optimization)
-4. [Memory Optimization](#memory-optimization)
-5. [Battery Optimization](#battery-optimization)
-6. [Network Optimization](#network-optimization)
-7. [Platform-Specific Optimizations](#platform-specific)
-8. [Advanced Techniques](#advanced-techniques)
+[arabic]
+. link:#targets[Performance Targets]
+. link:#profiling[Profiling and Measurement]
+. link:#cpu-optimization[CPU Optimization]
+. link:#memory-optimization[Memory Optimization]
+. link:#battery-optimization[Battery Optimization]
+. link:#network-optimization[Network Optimization]
+. link:#platform-specific[Platform-Specific Optimizations]
+. link:#advanced-techniques[Advanced Techniques]
 
----
+'''''
 
-## Performance Targets {#targets}
+[[targets]]
+=== Performance Targets
 
-### Latency Goals
+==== Latency Goals
 
-| Operation | Target | Acceptable | Notes |
-|-----------|--------|------------|-------|
-| Simple query | <10ms | <50ms | Local routing |
-| Complex query | <100ms | <500ms | May involve network |
-| Context switch | <5ms | <20ms | Project switching |
-| Reservoir update | <1ms | <5ms | Per conversation turn |
-| MLP inference | <1ms | <5ms | Routing decision |
-| SNN step | <100μs | <1ms | Wake detection |
+[cols=",,,",options="header",]
+|===
+|Operation |Target |Acceptable |Notes
+|Simple query |<10ms |<50ms |Local routing
+|Complex query |<100ms |<500ms |May involve network
+|Context switch |<5ms |<20ms |Project switching
+|Reservoir update |<1ms |<5ms |Per conversation turn
+|MLP inference |<1ms |<5ms |Routing decision
+|SNN step |<100μs |<1ms |Wake detection
+|===
 
-### Resource Limits
+==== Resource Limits
 
-| Resource | Target | Maximum | Notes |
-|----------|--------|---------|-------|
-| Binary size | <1.5MB | <5MB | Stripped release |
-| Memory (RSS) | <50MB | <128MB | Runtime footprint |
-| CPU (idle) | <1% | <5% | Background operation |
-| CPU (active) | <30% | <80% | During query processing |
-| Battery (24h) | <100mAh | <300mAh | Background + active |
+[cols=",,,",options="header",]
+|===
+|Resource |Target |Maximum |Notes
+|Binary size |<1.5MB |<5MB |Stripped release
+|Memory (RSS) |<50MB |<128MB |Runtime footprint
+|CPU (idle) |<1% |<5% |Background operation
+|CPU (active) |<30% |<80% |During query processing
+|Battery (24h) |<100mAh |<300mAh |Background + active
+|===
 
-### Throughput Goals
+==== Throughput Goals
 
-| Metric | Target | Notes |
-|--------|--------|-------|
-| Queries per second | >100 | Sustained throughput |
-| Reservoir updates/s | >1000 | Batch processing |
-| MLP inferences/s | >5000 | Routing decisions |
-| SNN steps/s | >10000 | Wake detection |
+[cols=",,",options="header",]
+|===
+|Metric |Target |Notes
+|Queries per second |>100 |Sustained throughput
+|Reservoir updates/s |>1000 |Batch processing
+|MLP inferences/s |>5000 |Routing decisions
+|SNN steps/s |>10000 |Wake detection
+|===
 
----
+'''''
 
-## Profiling and Measurement {#profiling}
+[[profiling]]
+=== Profiling and Measurement
 
-### Built-in Benchmarks
+==== Built-in Benchmarks
 
-```bash
+[source,bash]
+----
 # Run all benchmarks
 cargo bench
 
@@ -66,15 +77,16 @@ cargo bench mlp
 
 # With profiling
 cargo bench --bench orchestrator_bench -- --profile-time=10
-```
+----
 
-### Platform-Specific Profiling
+==== Platform-Specific Profiling
 
-#### Android
+===== Android
 
-**1. Simpleperf (CPU profiling)**
+*1. Simpleperf (CPU profiling)*
 
-```bash
+[source,bash]
+----
 # On device
 adb shell simpleperf record -p $(pidof mobile-ai) -o /data/local/tmp/perf.data
 adb shell simpleperf report -i /data/local/tmp/perf.data
@@ -82,59 +94,61 @@ adb shell simpleperf report -i /data/local/tmp/perf.data
 # Or with Rust symbols
 adb pull /data/local/tmp/perf.data
 simpleperf report-html -i perf.data -o report.html
-```
+----
 
-**2. Android Profiler (Android Studio)**
+*2. Android Profiler (Android Studio)*
 
-```
+....
 1. Open Android Studio
 2. View > Tool Windows > Profiler
 3. Select device and process
 4. Monitor CPU, Memory, Network
-```
+....
 
-**3. systrace (System-wide)**
+*3. systrace (System-wide)*
 
-```bash
+[source,bash]
+----
 # Record trace
 python systrace.py -o trace.html sched freq idle am wm gfx view binder_driver hal dalvik camera input res -a com.example.mobileai
 
 # Open in Chrome
 google-chrome trace.html
-```
+----
 
-#### iOS
+===== iOS
 
-**1. Instruments (CPU)**
+*1. Instruments (CPU)*
 
-```
+....
 1. Xcode > Open Developer Tool > Instruments
 2. Select "Time Profiler"
 3. Choose device and app
 4. Record and analyze hotspots
-```
+....
 
-**2. Instruments (Memory)**
+*2. Instruments (Memory)*
 
-```
+....
 1. Instruments > Allocations
 2. Look for memory growth
 3. Check for leaks with "Leaks" template
-```
+....
 
-**3. Instruments (Energy)**
+*3. Instruments (Energy)*
 
-```
+....
 1. Instruments > Energy Log
 2. Measure power consumption
 3. Identify energy spikes
-```
+....
 
-#### Linux
+===== Linux
 
-**1. perf (CPU profiling)**
+*1. perf (CPU profiling)*
 
-```bash
+[source,bash]
+----
 # Record
 perf record -F 99 -g ./target/release/mobile-ai
 
@@ -143,11 +157,12 @@ perf report
 
 # Flamegraph
 perf script | stackcollapse-perf.pl | flamegraph.pl > flamegraph.svg
-```
+----
 
-**2. valgrind (Memory profiling)**
+*2. valgrind (Memory profiling)*
 
-```bash
+[source,bash]
+----
 # Memcheck (leaks)
 valgrind --leak-check=full --show-leak-kinds=all ./target/release/mobile-ai
 
@@ -158,11 +173,12 @@ ms_print massif.out.* > massif.txt
 # Callgrind (call graph)
 valgrind --tool=callgrind ./target/release/mobile-ai
 kcachegrind callgrind.out.*
-```
+----
 
-**3. cargo-flamegraph**
+*3. cargo-flamegraph*
 
-```bash
+[source,bash]
+----
 # Install
 cargo install flamegraph
 
@@ -170,11 +186,12 @@ cargo install flamegraph
 cargo flamegraph --bench orchestrator_bench
 
 # Open flamegraph.svg
-```
+----
 
-### Custom Instrumentation
+==== Custom Instrumentation
 
-```rust
+[source,rust]
+----
 use std::time::Instant;
 
 // Timing macro
@@ -202,11 +219,12 @@ pub fn process(&mut self, query: Query) -> Result<Response, String> {
         // ... rest of processing
     })
 }
-```
+----
 
-**Conditional Compilation**
+*Conditional Compilation*
 
-```rust
+[source,rust]
+----
 #[cfg(feature = "profiling")]
 macro_rules! time_it {
     ($name:expr, $code:block) => {{ /* instrumented version */ }};
@@ -216,42 +234,46 @@ macro_rules! time_it {
 macro_rules! time_it {
     ($name:expr, $code:block) => {{ $code }};
 }
-```
+----
 
-Add to `Cargo.toml`:
+Add to `+Cargo.toml+`:
 
-```toml
+[source,toml]
+----
 [features]
 profiling = []
-```
+----
 
 Build with profiling:
 
-```bash
+[source,bash]
+----
 cargo build --release --features profiling
-```
+----
 
----
+'''''
 
-## CPU Optimization {#cpu-optimization}
+=== CPU Optimization
 
-### Hotspot Identification
+==== Hotspot Identification
 
 Based on profiling, typical hotspots:
 
-1. **Reservoir update** (~40% of CPU time)
-2. **MLP forward pass** (~30% of CPU time)
-3. **Text encoding** (~15% of CPU time)
-4. **Routing logic** (~10% of CPU time)
-5. **Other** (~5%)
+[arabic]
+. *Reservoir update* (~40% of CPU time)
+. *MLP forward pass* (~30% of CPU time)
+. *Text encoding* (~15% of CPU time)
+. *Routing logic* (~10% of CPU time)
+. *Other* (~5%)
 
-### Optimization Techniques
+==== Optimization Techniques
 
-#### 1. SIMD Vectorization
+===== 1. SIMD Vectorization
 
-**ARM NEON (Android, iOS, Linux ARM)**
+*ARM NEON (Android, iOS, Linux ARM)*
 
-```rust
+[source,rust]
+----
 #[cfg(target_arch = "aarch64")]
 use std::arch::aarch64::*;
 
@@ -280,11 +302,12 @@ fn dot_product_neon(a: &[f32], b: &[f32]) -> f32 {
     // Fallback scalar implementation
     a.iter().zip(b).map(|(x, y)| x * y).sum()
 }
-```
+----
 
-**Usage in Reservoir**
+*Usage in Reservoir*
 
-```rust
+[source,rust]
+----
 // In src/reservoir.rs
 
 pub fn update(&mut self, input: &[f32]) -> Vec<f32> {
@@ -311,15 +334,15 @@ pub fn update(&mut self, input: &[f32]) -> Vec<f32> {
 
     // ... rest of update
 }
-```
+----
 
-**Benchmark Impact**:
-- Before: 200μs per update
-- After: 80μs per update (2.5x speedup)
+*Benchmark Impact*: - Before: 200μs per update - After: 80μs per update
+(2.5x speedup)
 
-#### 2. Loop Unrolling
+===== 2. Loop Unrolling
 
-```rust
+[source,rust]
+----
 // Manual unrolling for small fixed-size loops
 pub fn softmax(logits: &[f32]) -> Vec<f32> {
     let max_val = logits.iter().cloned().fold(f32::NEG_INFINITY, f32::max);
@@ -345,11 +368,12 @@ pub fn softmax(logits: &[f32]) -> Vec<f32> {
     let sum: f32 = exp_vals.iter().sum();
     exp_vals.iter().map(|x| x / sum).collect()
 }
-```
+----
 
-#### 3. Lazy Evaluation
+===== 3. Lazy Evaluation
 
-```rust
+[source,rust]
+----
 // Only compute reservoir output when needed
 pub fn snapshot(&self, last_n: usize) -> ContextSnapshot {
     ContextSnapshot {
@@ -368,11 +392,12 @@ pub fn snapshot(&self, last_n: usize) -> ContextSnapshot {
         },
     }
 }
-```
+----
 
-#### 4. Inlining
+===== 4. Inlining
 
-```rust
+[source,rust]
+----
 // Force inline for small hot functions
 #[inline(always)]
 pub fn estimate_tokens(text: &str) -> usize {
@@ -392,11 +417,12 @@ fn current_timestamp() -> u64 {
 pub fn train(&mut self, inputs: &[Vec<f32>], targets: &[Vec<f32>], lambda: f32) -> Result<(), String> {
     // Large training function - don't bloat call sites
 }
-```
+----
 
-#### 5. Branch Prediction Hints
+===== 5. Branch Prediction Hints
 
-```rust
+[source,rust]
+----
 // Use likely/unlikely macros (unstable, or use manual patterns)
 #[inline(always)]
 fn likely(b: bool) -> bool {
@@ -412,40 +438,42 @@ if likely(query.text.len() < 200) {
     // Common case: short query, local routing
     return (RoutingDecision::Local, 0.75);
 }
-```
+----
 
-#### 6. Fast Math
+===== 6. Fast Math
 
-In `Cargo.toml`:
+In `+Cargo.toml+`:
 
-```toml
+[source,toml]
+----
 [profile.release]
 # ... existing config
 codegen-units = 1
 
 # Optionally enable fast math (less precise but faster)
 # rustflags = ["-C", "target-cpu=native", "-C", "opt-level=3"]
-```
+----
 
 Build with target-specific optimizations:
 
-```bash
+[source,bash]
+----
 # For specific CPU
 RUSTFLAGS="-C target-cpu=cortex-a76" cargo build --release --target aarch64-linux-android
 
 # For best available on build machine
 RUSTFLAGS="-C target-cpu=native" cargo build --release
-```
+----
 
----
+'''''
 
-## Memory Optimization {#memory-optimization}
+=== Memory Optimization
 
-### Memory Usage Analysis
+==== Memory Usage Analysis
 
-**Current Memory Footprint**:
+*Current Memory Footprint*:
 
-```
+....
 Binary:               1.5MB
 Stack (per thread):   ~2MB
 Orchestrator:         ~500KB
@@ -456,13 +484,14 @@ Orchestrator:         ~500KB
   └─ MLP:             ~160KB (weights + biases)
 SNN:                  ~50KB (sparse weights)
 Total (approximate):  ~2.5MB RSS
-```
+....
 
-### Optimization Techniques
+==== Optimization Techniques
 
-#### 1. Memory Pooling
+===== 1. Memory Pooling
 
-```rust
+[source,rust]
+----
 use std::sync::Mutex;
 
 // Pool of reusable buffers
@@ -507,11 +536,12 @@ lazy_static::lazy_static! {
 let mut embedding = VEC_384_POOL.get();
 // ... use embedding
 VEC_384_POOL.return_vec(embedding);
-```
+----
 
-#### 2. Small String Optimization
+===== 2. Small String Optimization
 
-```rust
+[source,rust]
+----
 use std::borrow::Cow;
 
 // Use Cow for strings that might be borrowed
@@ -543,11 +573,12 @@ impl<'a> Query<'a> {
         }
     }
 }
-```
+----
 
-#### 3. Compact Data Structures
+===== 3. Compact Data Structures
 
-```rust
+[source,rust]
+----
 // Use smaller types where possible
 pub struct CompactQuery {
     pub text: String,
@@ -573,11 +604,12 @@ impl CompactQuery {
         }
     }
 }
-```
+----
 
-#### 4. Bounded Collections
+===== 4. Bounded Collections
 
-```rust
+[source,rust]
+----
 // Use fixed-size circular buffer instead of unbounded Vec
 pub struct BoundedHistory<T> {
     buffer: Vec<T>,
@@ -618,11 +650,12 @@ pub struct ContextManager {
     history: BoundedHistory<ConversationTurn>,  // Fixed size, no unbounded growth
     // ...
 }
-```
+----
 
-#### 5. Lazy Serialization
+===== 5. Lazy Serialization
 
-```rust
+[source,rust]
+----
 // Don't serialize everything all the time
 impl ContextManager {
     pub fn save_checkpoint(&self, path: &str) -> Result<(), String> {
@@ -642,25 +675,27 @@ impl ContextManager {
         std::fs::write(path, json).map_err(|e| e.to_string())
     }
 }
-```
+----
 
----
+'''''
 
-## Battery Optimization {#battery-optimization}
+=== Battery Optimization
 
-### Power Consumption Sources
+==== Power Consumption Sources
 
-1. **CPU (40-60%)**: Active computation
-2. **Network (20-30%)**: API calls
-3. **Memory (10-15%)**: DRAM refresh, access
-4. **Storage (5-10%)**: Disk I/O
-5. **Sensors (0-5%)**: Wake detection
+[arabic]
+. *CPU (40-60%)*: Active computation
+. *Network (20-30%)*: API calls
+. *Memory (10-15%)*: DRAM refresh, access
+. *Storage (5-10%)*: Disk I/O
+. *Sensors (0-5%)*: Wake detection
 
-### Optimization Strategies
+==== Optimization Strategies
 
-#### 1. Event-Driven Architecture
+===== 1. Event-Driven Architecture
 
-```rust
+[source,rust]
+----
 // Don't poll continuously, use event-driven wake
 pub struct PowerEfficientOrchestrator {
     orchestrator: Orchestrator,
@@ -713,11 +748,12 @@ impl PowerEfficientOrchestrator {
         }
     }
 }
-```
+----
 
-#### 2. Batch Processing
+===== 2. Batch Processing
 
-```rust
+[source,rust]
+----
 // Batch queries to amortize wake-up cost
 pub struct BatchProcessor {
     pending_queries: Vec<Query>,
@@ -745,11 +781,12 @@ impl BatchProcessor {
         self.last_process = Instant::now();
     }
 }
-```
+----
 
-#### 3. Adaptive Frequency Scaling
+===== 3. Adaptive Frequency Scaling
 
-```rust
+[source,rust]
+----
 // Hint CPU governor based on workload
 #[cfg(target_os = "linux")]
 fn set_cpu_governor(governor: &str) -> Result<(), std::io::Error> {
@@ -782,11 +819,12 @@ pub fn process_with_power_hint(&mut self, query: Query) -> Result<Response, Stri
         result
     }
 }
-```
+----
 
-#### 4. Network Request Coalescing
+===== 4. Network Request Coalescing
 
-```rust
+[source,rust]
+----
 // Batch network requests instead of making individual calls
 pub struct NetworkBatcher {
     pending_requests: Vec<RemoteQuery>,
@@ -823,11 +861,12 @@ impl NetworkBatcher {
         self.timer = None;
     }
 }
-```
+----
 
-#### 5. Wake Lock Management
+===== 5. Wake Lock Management
 
-```rust
+[source,rust]
+----
 // Platform-specific wake lock (Android example)
 #[cfg(target_os = "android")]
 mod android_power {
@@ -861,17 +900,18 @@ pub fn process_critical_query(&mut self, query: Query) -> Result<Response, Strin
 
     result
 }
-```
+----
 
----
+'''''
 
-## Network Optimization {#network-optimization}
+=== Network Optimization
 
-### Techniques
+==== Techniques
 
-#### 1. Request Caching
+===== 1. Request Caching
 
-```rust
+[source,rust]
+----
 use std::collections::HashMap;
 use std::time::{Duration, Instant};
 
@@ -904,11 +944,12 @@ impl ResponseCache {
         self.cache.insert(query_hash, (response, Instant::now()));
     }
 }
-```
+----
 
-#### 2. Compression
+===== 2. Compression
 
-```rust
+[source,rust]
+----
 #[cfg(feature = "network")]
 async fn send_compressed_request(query: &str) -> Result<Response, String> {
     use flate2::write::GzEncoder;
@@ -930,11 +971,12 @@ async fn send_compressed_request(query: &str) -> Result<Response, String> {
 
     // ... parse response
 }
-```
+----
 
-#### 3. Timeout and Retry
+===== 3. Timeout and Retry
 
-```rust
+[source,rust]
+----
 #[cfg(feature = "network")]
 async fn request_with_timeout(
     query: &str,
@@ -963,17 +1005,19 @@ async fn request_with_timeout(
         }
     }
 }
-```
+----
 
----
+'''''
 
-## Platform-Specific Optimizations {#platform-specific}
+[[platform-specific]]
+=== Platform-Specific Optimizations
 
-### Android
+==== Android
 
-#### 1. Use Hardware Acceleration
+===== 1. Use Hardware Acceleration
 
-```rust
+[source,rust]
+----
 // Leverage Android Neural Networks API (NNAPI)
 #[cfg(target_os = "android")]
 mod nnapi {
@@ -987,23 +1031,25 @@ mod nnapi {
         todo!()
     }
 }
-```
+----
 
-#### 2. Doze Mode Handling
+===== 2. Doze Mode Handling
 
-```rust
+[source,rust]
+----
 #[cfg(target_os = "android")]
 pub fn handle_doze_mode() {
     // Use AlarmManager for critical tasks during Doze
     // Defer non-critical work
 }
-```
+----
 
-### iOS
+==== iOS
 
-#### 1. Core ML Integration
+===== 1. Core ML Integration
 
-```swift
+[source,swift]
+----
 // Convert MLP to Core ML model
 import CoreML
 
@@ -1022,11 +1068,12 @@ class MLPRouter {
         return output.decision
     }
 }
-```
+----
 
-#### 2. Background Processing
+===== 2. Background Processing
 
-```swift
+[source,swift]
+----
 import BackgroundTasks
 
 func scheduleBackgroundProcessing() {
@@ -1036,13 +1083,14 @@ func scheduleBackgroundProcessing() {
 
     try? BGTaskScheduler.shared.submit(request)
 }
-```
+----
 
-### Linux ARM
+==== Linux ARM
 
-#### 1. DSP Offload
+===== 1. DSP Offload
 
-```rust
+[source,rust]
+----
 // Use Qualcomm Hexagon DSP (if available)
 #[cfg(all(target_os = "linux", target_arch = "aarch64"))]
 mod hexagon {
@@ -1052,15 +1100,16 @@ mod hexagon {
         todo!()
     }
 }
-```
+----
 
----
+'''''
 
-## Advanced Techniques {#advanced-techniques}
+=== Advanced Techniques
 
-### Model Quantization
+==== Model Quantization
 
-```rust
+[source,rust]
+----
 // Convert f32 weights to int8
 pub struct QuantizedMLP {
     weights: Vec<Vec<Vec<i8>>>,
@@ -1114,11 +1163,12 @@ impl QuantizedMLP {
 // - 4x memory reduction (f32 → i8)
 // - 2-4x faster on mobile (int8 SIMD)
 // - <1% accuracy loss (typically)
-```
+----
 
-### Model Pruning
+==== Model Pruning
 
-```rust
+[source,rust]
+----
 pub fn prune_mlp(mlp: &mut MLP, threshold: f32) -> usize {
     let mut pruned_count = 0;
 
@@ -1145,11 +1195,12 @@ println!("Pruned {} weights ({:.1}%)", pruned, pruned as f32 / total_weights * 1
 pub struct SparseMLP {
     weights: Vec<HashMap<(usize, usize), f32>>,  // Only store non-zero
 }
-```
+----
 
-### Knowledge Distillation
+==== Knowledge Distillation
 
-```rust
+[source,rust]
+----
 // Train small model to mimic large model
 pub fn distill_mlp(
     large_mlp: &MLP,
@@ -1172,15 +1223,16 @@ pub fn distill_mlp(
 }
 
 // Result: 10x smaller model with 95% accuracy of large model
-```
+----
 
----
+'''''
 
-## Monitoring and Metrics
+=== Monitoring and Metrics
 
-### Runtime Metrics
+==== Runtime Metrics
 
-```rust
+[source,rust]
+----
 use std::sync::atomic::{AtomicU64, Ordering};
 
 pub struct Metrics {
@@ -1221,28 +1273,28 @@ impl Metrics {
         eprintln!("  Cache hit rate: {:.1}%", hit_rate);
     }
 }
-```
+----
 
----
+'''''
 
-## Checklist
+=== Checklist
 
-- [ ] Profile on target device (not just development machine)
-- [ ] Enable SIMD for matrix operations
-- [ ] Use memory pooling for frequent allocations
-- [ ] Implement request caching
-- [ ] Use event-driven architecture for battery savings
-- [ ] Quantize models (f32 → int8)
-- [ ] Prune unnecessary weights
-- [ ] Batch network requests
-- [ ] Set appropriate CPU governor hints
-- [ ] Monitor power consumption with platform tools
-- [ ] Optimize binary size (target <1.5MB)
-- [ ] Test on low-end devices
-- [ ] Measure battery impact over 24 hours
+* [ ] Profile on target device (not just development machine)
+* [ ] Enable SIMD for matrix operations
+* [ ] Use memory pooling for frequent allocations
+* [ ] Implement request caching
+* [ ] Use event-driven architecture for battery savings
+* [ ] Quantize models (f32 → int8)
+* [ ] Prune unnecessary weights
+* [ ] Batch network requests
+* [ ] Set appropriate CPU governor hints
+* [ ] Monitor power consumption with platform tools
+* [ ] Optimize binary size (target <1.5MB)
+* [ ] Test on low-end devices
+* [ ] Measure battery impact over 24 hours
 
----
+'''''
 
-*Run benchmarks: `cargo bench`*
-*Profile CPU: `perf record && perf report`*
-*Check memory: `valgrind --tool=massif`*
+_Run benchmarks: `+cargo bench+`_ _Profile CPU:
+`+perf record && perf report+`_ _Check memory:
+`+valgrind --tool=massif+`_

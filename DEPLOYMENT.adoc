@@ -1,51 +1,59 @@
-# Deployment Guide
+== Deployment Guide
 
-This guide covers deploying the Mobile AI Orchestrator to various mobile and embedded platforms.
+This guide covers deploying the Mobile AI Orchestrator to various mobile
+and embedded platforms.
 
----
+'''''
 
-## Table of Contents
+=== Table of Contents
 
-1. [Platform Overview](#platforms)
-2. [Android Deployment](#android)
-3. [iOS Deployment](#ios)
-4. [Linux Mobile (Embedded)](#linux-mobile)
-5. [Cross-Compilation](#cross-compilation)
-6. [Size Optimization](#size-optimization)
-7. [Testing and Validation](#testing)
+[arabic]
+. link:#platforms[Platform Overview]
+. link:#android[Android Deployment]
+. link:#ios[iOS Deployment]
+. link:#linux-mobile[Linux Mobile (Embedded)]
+. link:#cross-compilation[Cross-Compilation]
+. link:#size-optimization[Size Optimization]
+. link:#testing[Testing and Validation]
 
----
+'''''
 
-## Platform Overview {#platforms}
+[[platforms]]
+=== Platform Overview
 
-### Supported Platforms
+==== Supported Platforms
 
-| Platform | Architecture | Status | Notes |
-|----------|-------------|--------|-------|
-| Android | ARM64 (aarch64) | ✅ Primary | NDK r25+ |
-| Android | ARMv7 (armv7) | ⚠️ Limited | Older devices |
-| iOS | ARM64 (aarch64) | ✅ Primary | iOS 14+ |
-| Linux Mobile | ARM64 | ✅ Primary | PinePhone, Librem 5 |
-| RISC-V | rv64gc | 🔬 Experimental | Future platforms |
+[cols=",,,",options="header",]
+|===
+|Platform |Architecture |Status |Notes
+|Android |ARM64 (aarch64) |✅ Primary |NDK r25+
+|Android |ARMv7 (armv7) |⚠️ Limited |Older devices
+|iOS |ARM64 (aarch64) |✅ Primary |iOS 14+
+|Linux Mobile |ARM64 |✅ Primary |PinePhone, Librem 5
+|RISC-V |rv64gc |🔬 Experimental |Future platforms
+|===
 
-### Minimum Requirements
+==== Minimum Requirements
 
-- **RAM**: 128MB minimum, 256MB recommended
-- **Storage**: 5MB binary + 10-50MB for models
-- **CPU**: ARMv7+ or RISC-V RV64
-- **OS**: Android 8+, iOS 14+, Linux 5.4+
+* *RAM*: 128MB minimum, 256MB recommended
+* *Storage*: 5MB binary + 10-50MB for models
+* *CPU*: ARMv7+ or RISC-V RV64
+* *OS*: Android 8+, iOS 14+, Linux 5.4+
 
----
+'''''
 
-## Android Deployment {#android}
+[[android]]
+=== Android Deployment
 
-### Option 1: Rust via JNI (Recommended)
+==== Option 1: Rust via JNI (Recommended)
 
-This approach builds the Rust library as a native library (`.so`) and calls it from Java/Kotlin via JNI.
+This approach builds the Rust library as a native library (`+.so+`) and
+calls it from Java/Kotlin via JNI.
 
-#### Step 1: Install Android NDK
+===== Step 1: Install Android NDK
 
-```bash
+[source,bash]
+----
 # Install Android NDK
 # Download from https://developer.android.com/ndk/downloads
 export ANDROID_NDK_HOME=/path/to/android-ndk-r25c
@@ -54,13 +62,14 @@ export ANDROID_NDK_HOME=/path/to/android-ndk-r25c
 rustup target add aarch64-linux-android
 rustup target add armv7-linux-androideabi
 rustup target add x86_64-linux-android  # For emulator
-```
+----
 
-#### Step 2: Configure Cargo
+===== Step 2: Configure Cargo
 
-Create `.cargo/config.toml`:
+Create `+.cargo/config.toml+`:
 
-```toml
+[source,toml]
+----
 [target.aarch64-linux-android]
 linker = "/path/to/android-ndk/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android30-clang"
 
@@ -69,23 +78,25 @@ linker = "/path/to/android-ndk/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-
 
 [target.x86_64-linux-android]
 linker = "/path/to/android-ndk/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android30-clang"
-```
+----
 
-#### Step 3: Create JNI Wrapper
+===== Step 3: Create JNI Wrapper
 
-Add to `Cargo.toml`:
+Add to `+Cargo.toml+`:
 
-```toml
+[source,toml]
+----
 [dependencies]
 jni = "0.21"
 
 [lib]
 crate-type = ["cdylib"]  # For Android
-```
+----
 
-Create `src/android.rs`:
+Create `+src/android.rs+`:
 
-```rust
+[source,rust]
+----
 use jni::JNIEnv;
 use jni::objects::{JClass, JString};
 use jni::sys::jstring;
@@ -142,18 +153,20 @@ pub extern "C" fn Java_com_example_mobileai_MobileAI_switchProject(
     let mut orch = ORCHESTRATOR.lock().unwrap();
     orch.switch_project(&project);
 }
-```
+----
 
-Add to `src/lib.rs`:
+Add to `+src/lib.rs+`:
 
-```rust
+[source,rust]
+----
 #[cfg(target_os = "android")]
 pub mod android;
-```
+----
 
-#### Step 4: Build Native Library
+===== Step 4: Build Native Library
 
-```bash
+[source,bash]
+----
 # Build for ARM64 (most modern Android devices)
 cargo build --target aarch64-linux-android --release
 
@@ -162,19 +175,20 @@ cargo build --target armv7-linux-androideabi --release
 
 # Build for x86_64 (emulator)
 cargo build --target x86_64-linux-android --release
-```
+----
 
-Outputs:
-- `target/aarch64-linux-android/release/libmobile_ai_orchestrator.so`
-- `target/armv7-linux-androideabi/release/libmobile_ai_orchestrator.so`
-- `target/x86_64-linux-android/release/libmobile_ai_orchestrator.so`
+Outputs: -
+`+target/aarch64-linux-android/release/libmobile_ai_orchestrator.so+` -
+`+target/armv7-linux-androideabi/release/libmobile_ai_orchestrator.so+`
+- `+target/x86_64-linux-android/release/libmobile_ai_orchestrator.so+`
 
-#### Step 5: Android Studio Integration
+===== Step 5: Android Studio Integration
 
-1. **Create Android project** in Android Studio
+[arabic]
+. *Create Android project* in Android Studio
+. *Add native libraries* to `+app/src/main/jniLibs/+`:
 
-2. **Add native libraries** to `app/src/main/jniLibs/`:
-```
+....
 app/src/main/jniLibs/
 ├── arm64-v8a/
 │   └── libmobile_ai_orchestrator.so
@@ -182,11 +196,14 @@ app/src/main/jniLibs/
 │   └── libmobile_ai_orchestrator.so
 └── x86_64/
     └── libmobile_ai_orchestrator.so
-```
+....
 
-3. **Create Java wrapper** (`app/src/main/java/com/example/mobileai/MobileAI.java`):
+[arabic, start=3]
+. *Create Java wrapper*
+(`+app/src/main/java/com/example/mobileai/MobileAI.java+`):
 
-```java
+[source,java]
+----
 package com.example.mobileai;
 
 public class MobileAI {
@@ -198,11 +215,13 @@ public class MobileAI {
     public static native String processQuery(String query);
     public static native void switchProject(String projectName);
 }
-```
+----
 
-4. **Use in Activity**:
+[arabic, start=4]
+. *Use in Activity*:
 
-```kotlin
+[source,kotlin]
+----
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -218,13 +237,13 @@ class MainActivity : AppCompatActivity() {
         MobileAI.switchProject("my-app")
     }
 }
-```
+----
 
-#### Step 6: ProGuard Configuration
+===== Step 6: ProGuard Configuration
 
-Add to `proguard-rules.pro`:
+Add to `+proguard-rules.pro+`:
 
-```
+....
 # Keep native methods
 -keepclasseswithmembernames class * {
     native <methods>;
@@ -232,13 +251,14 @@ Add to `proguard-rules.pro`:
 
 # Keep MobileAI class
 -keep class com.example.mobileai.MobileAI { *; }
-```
+....
 
-### Option 2: Standalone Binary via Termux
+==== Option 2: Standalone Binary via Termux
 
 For testing on rooted devices or Termux:
 
-```bash
+[source,bash]
+----
 # Install Rust in Termux
 pkg install rust
 
@@ -251,15 +271,17 @@ cargo build --release
 
 # Run
 ./target/release/mobile-ai
-```
+----
 
----
+'''''
 
-## iOS Deployment {#ios}
+[[ios]]
+=== iOS Deployment
 
-### Prerequisites
+==== Prerequisites
 
-```bash
+[source,bash]
+----
 # Install Xcode Command Line Tools
 xcode-select --install
 
@@ -267,22 +289,24 @@ xcode-select --install
 rustup target add aarch64-apple-ios
 rustup target add x86_64-apple-ios  # For simulator
 rustup target add aarch64-apple-ios-sim  # For M1/M2 simulator
-```
+----
 
-### Step 1: Create Static Library
+==== Step 1: Create Static Library
 
-Update `Cargo.toml`:
+Update `+Cargo.toml+`:
 
-```toml
+[source,toml]
+----
 [lib]
 crate-type = ["staticlib"]  # For iOS
-```
+----
 
-### Step 2: Create C Header
+==== Step 2: Create C Header
 
-Create `mobile_ai.h`:
+Create `+mobile_ai.h+`:
 
-```c
+[source,c]
+----
 #ifndef MOBILE_AI_H
 #define MOBILE_AI_H
 
@@ -302,13 +326,14 @@ void mobile_ai_switch_project(const char* project_name);
 void mobile_ai_free_string(char* s);
 
 #endif
-```
+----
 
-### Step 3: Create C Bindings
+==== Step 3: Create C Bindings
 
-Create `src/ios.rs`:
+Create `+src/ios.rs+`:
 
-```rust
+[source,rust]
+----
 use std::ffi::{CStr, CString};
 use std::os::raw::c_char;
 use std::sync::Mutex;
@@ -365,18 +390,20 @@ pub extern "C" fn mobile_ai_free_string(s: *mut c_char) {
         }
     }
 }
-```
+----
 
-Add to `src/lib.rs`:
+Add to `+src/lib.rs+`:
 
-```rust
+[source,rust]
+----
 #[cfg(target_os = "ios")]
 pub mod ios;
-```
+----
 
-### Step 4: Build for iOS
+==== Step 4: Build for iOS
 
-```bash
+[source,bash]
+----
 # Build for device (ARM64)
 cargo build --target aarch64-apple-ios --release
 
@@ -391,19 +418,19 @@ lipo -create \
     target/aarch64-apple-ios/release/libmobile_ai_orchestrator.a \
     target/x86_64-apple-ios/release/libmobile_ai_orchestrator.a \
     -output libmobile_ai_universal.a
-```
+----
 
-### Step 5: Xcode Integration
+==== Step 5: Xcode Integration
 
-1. **Create new iOS project** in Xcode
+[arabic]
+. *Create new iOS project* in Xcode
+. *Add library*:
+* Drag `+libmobile_ai_universal.a+` to project
+* Drag `+mobile_ai.h+` to project
+. *Create Swift wrapper* (`+MobileAI.swift+`):
 
-2. **Add library**:
-   - Drag `libmobile_ai_universal.a` to project
-   - Drag `mobile_ai.h` to project
-
-3. **Create Swift wrapper** (`MobileAI.swift`):
-
-```swift
+[source,swift]
+----
 import Foundation
 
 class MobileAI {
@@ -432,17 +459,21 @@ class MobileAI {
         mobile_ai_switch_project(cProject)
     }
 }
-```
+----
 
-4. **Create bridging header** (`MobileAI-Bridging-Header.h`):
+[arabic, start=4]
+. *Create bridging header* (`+MobileAI-Bridging-Header.h+`):
 
-```objc
+[source,objc]
+----
 #import "mobile_ai.h"
-```
+----
 
-5. **Use in SwiftUI**:
+[arabic, start=5]
+. *Use in SwiftUI*:
 
-```swift
+[source,swift]
+----
 struct ContentView: View {
     @State private var query = ""
     @State private var response = ""
@@ -461,21 +492,24 @@ struct ContentView: View {
         }
     }
 }
-```
+----
 
----
+'''''
 
-## Linux Mobile (Embedded) {#linux-mobile}
+[[linux-mobile]]
+=== Linux Mobile (Embedded)
 
-### Platforms
+[[platforms-1]]
+==== Platforms
 
-- **PinePhone** (Manjaro, postmarketOS)
-- **Librem 5** (PureOS)
-- **Generic ARM64 Linux**
+* *PinePhone* (Manjaro, postmarketOS)
+* *Librem 5* (PureOS)
+* *Generic ARM64 Linux*
 
-### Direct Compilation
+==== Direct Compilation
 
-```bash
+[source,bash]
+----
 # On device
 cargo build --release
 
@@ -493,13 +527,14 @@ cargo build --target aarch64-unknown-linux-gnu --release
 
 # Copy to device
 scp target/aarch64-unknown-linux-gnu/release/mobile-ai user@pinephone:/usr/local/bin/
-```
+----
 
-### systemd Service
+==== systemd Service
 
-Create `/etc/systemd/system/mobile-ai.service`:
+Create `+/etc/systemd/system/mobile-ai.service+`:
 
-```ini
+[source,ini]
+----
 [Unit]
 Description=Mobile AI Orchestrator Service
 After=network.target
@@ -517,23 +552,25 @@ CPUQuota=50%
 
 [Install]
 WantedBy=multi-user.target
-```
+----
 
 Enable and start:
 
-```bash
+[source,bash]
+----
 sudo systemctl enable mobile-ai
 sudo systemctl start mobile-ai
 sudo systemctl status mobile-ai
-```
+----
 
----
+'''''
 
-## Cross-Compilation {#cross-compilation}
+=== Cross-Compilation
 
-### Using `cross`
+==== Using `+cross+`
 
-```bash
+[source,bash]
+----
 # Install cross
 cargo install cross
 
@@ -541,11 +578,12 @@ cargo install cross
 cross build --target aarch64-linux-android --release
 cross build --target aarch64-unknown-linux-gnu --release
 cross build --target armv7-unknown-linux-gnueabihf --release
-```
+----
 
-### Using Nix (Recommended)
+==== Using Nix (Recommended)
 
-```bash
+[source,bash]
+----
 # Build for Android
 nix build .#packages.x86_64-linux.android-aarch64
 
@@ -554,11 +592,12 @@ nix build .#packages.x86_64-linux.linux-aarch64
 
 # Build with network features
 nix build .#packages.x86_64-linux.with-network
-```
+----
 
-Update `flake.nix` to add cross-compilation targets:
+Update `+flake.nix+` to add cross-compilation targets:
 
-```nix
+[source,nix]
+----
 {
   outputs = { self, nixpkgs, ... }: {
     packages.x86_64-linux = {
@@ -572,37 +611,37 @@ Update `flake.nix` to add cross-compilation targets:
     };
   };
 }
-```
+----
 
----
+'''''
 
-## Size Optimization {#size-optimization}
+=== Size Optimization
 
-### Current Binary Size
+==== Current Binary Size
 
-Default release build:
-- **Linux x86_64**: ~2.5MB (stripped)
-- **Android ARM64**: ~2.8MB (stripped)
-- **iOS ARM64**: ~2.6MB (stripped)
+Default release build: - *Linux x86_64*: ~2.5MB (stripped) - *Android
+ARM64*: ~2.8MB (stripped) - *iOS ARM64*: ~2.6MB (stripped)
 
-### Optimization Techniques
+==== Optimization Techniques
 
-#### 1. Profile-Guided Optimization
+===== 1. Profile-Guided Optimization
 
-Already configured in `Cargo.toml`:
+Already configured in `+Cargo.toml+`:
 
-```toml
+[source,toml]
+----
 [profile.release]
 opt-level = "z"     # Optimize for size
 lto = true          # Link-time optimization
 codegen-units = 1   # Better optimization
 strip = true        # Strip symbols
 panic = "abort"     # Smaller binary
-```
+----
 
-#### 2. Remove Debug Info
+===== 2. Remove Debug Info
 
-```bash
+[source,bash]
+----
 # Build without debug info
 cargo build --release
 
@@ -610,20 +649,22 @@ cargo build --release
 strip target/release/mobile-ai
 
 # Result: ~2MB → ~1.8MB
-```
+----
 
-#### 3. Feature Flags
+===== 3. Feature Flags
 
-```bash
+[source,bash]
+----
 # Build without network features
 cargo build --release --no-default-features
 
 # Result: ~2MB → ~1.5MB (removes tokio/reqwest)
-```
+----
 
-#### 4. UPX Compression
+===== 4. UPX Compression
 
-```bash
+[source,bash]
+----
 # Install UPX
 sudo apt install upx
 
@@ -632,13 +673,14 @@ upx --best --lzma target/release/mobile-ai
 
 # Result: ~1.5MB → ~600KB
 # Note: Slower startup, but much smaller
-```
+----
 
-#### 5. Minimize Dependencies
+===== 5. Minimize Dependencies
 
-Remove unused dependencies from `Cargo.toml`:
+Remove unused dependencies from `+Cargo.toml+`:
 
-```toml
+[source,toml]
+----
 [dependencies]
 # Only keep what you need
 serde = { version = "1.0", features = ["derive"] }
@@ -647,26 +689,31 @@ serde_json = "1.0"
 # Remove if not needed:
 # tokio = ...
 # reqwest = ...
-```
+----
 
-### Target Sizes
+==== Target Sizes
 
-| Configuration | Size | Use Case |
-|---------------|------|----------|
-| Full (network + all features) | 2.5MB | Development |
-| Release (no network) | 1.5MB | Offline deployment |
-| Release + stripped + UPX | 600KB | Constrained devices |
-| Minimal (no serde_json) | 400KB | Embedded systems |
+[cols=",,",options="header",]
+|===
+|Configuration |Size |Use Case
+|Full (network + all features) |2.5MB |Development
+|Release (no network) |1.5MB |Offline deployment
+|Release + stripped + UPX |600KB |Constrained devices
+|Minimal (no serde_json) |400KB |Embedded systems
+|===
 
----
+'''''
 
-## Testing and Validation {#testing}
+[[testing]]
+=== Testing and Validation
 
-### On-Device Testing
+==== On-Device Testing
 
-#### Android
+[[android-1]]
+===== Android
 
-```bash
+[source,bash]
+----
 # Push binary to device
 adb push target/aarch64-linux-android/release/mobile-ai /data/local/tmp/
 
@@ -678,21 +725,25 @@ adb shell /data/local/tmp/mobile-ai
 
 # Check logs
 adb logcat | grep mobile-ai
-```
+----
 
-#### iOS
+[[ios-1]]
+===== iOS
 
-```bash
+[source,bash]
+----
 # Deploy via Xcode
 # Run on device or simulator
 
 # View logs
 xcrun simctl spawn booted log stream --predicate 'subsystem contains "mobile-ai"'
-```
+----
 
-#### Linux Mobile
+[[linux-mobile-1]]
+===== Linux Mobile
 
-```bash
+[source,bash]
+----
 # SSH to device
 ssh user@192.168.1.100
 
@@ -705,13 +756,14 @@ free -h
 
 # Check CPU usage
 top -p $(pidof mobile-ai)
-```
+----
 
-### Performance Testing
+==== Performance Testing
 
-Create `benches/mobile_bench.rs`:
+Create `+benches/mobile_bench.rs+`:
 
-```rust
+[source,rust]
+----
 use criterion::{criterion_group, criterion_main, Criterion};
 use mobile_ai_orchestrator::*;
 
@@ -728,11 +780,12 @@ fn bench_mobile_query(c: &mut Criterion) {
 
 criterion_group!(benches, bench_mobile_query);
 criterion_main!(benches);
-```
+----
 
 Run on device:
 
-```bash
+[source,bash]
+----
 # Android
 adb push target/aarch64-linux-android/release/deps/mobile_bench /data/local/tmp/
 adb shell /data/local/tmp/mobile_bench --bench
@@ -742,13 +795,15 @@ adb shell /data/local/tmp/mobile_bench --bench
 
 # Linux
 ./target/aarch64-unknown-linux-gnu/release/deps/mobile_bench --bench
-```
+----
 
-### Battery Impact Testing
+==== Battery Impact Testing
 
-#### Android
+[[android-2]]
+===== Android
 
-```bash
+[source,bash]
+----
 # Start battery monitoring
 adb shell dumpsys batterystats --reset
 adb shell dumpsys batterystats --enable full-wake-history
@@ -761,36 +816,36 @@ adb shell dumpsys batterystats > battery_stats.txt
 
 # Analyze
 # Look for "mobile-ai" in power consumption breakdown
-```
+----
 
-#### iOS
+[[ios-2]]
+===== iOS
 
-Use Xcode Instruments:
-1. Open Instruments
-2. Select "Energy Log"
-3. Profile your app
-4. Analyze power usage over time
+Use Xcode Instruments: 1. Open Instruments 2. Select "`Energy Log`" 3.
+Profile your app 4. Analyze power usage over time
 
-### Memory Leak Testing
+==== Memory Leak Testing
 
-```bash
+[source,bash]
+----
 # Android (valgrind not available, use Android Studio Profiler)
 
 # iOS (Instruments - Leaks)
 
 # Linux (valgrind)
 valgrind --leak-check=full ./target/release/mobile-ai
-```
+----
 
----
+'''''
 
-## Continuous Deployment
+=== Continuous Deployment
 
-### GitHub Actions for Multi-Platform Builds
+==== GitHub Actions for Multi-Platform Builds
 
-Create `.github/workflows/mobile-deploy.yml`:
+Create `+.github/workflows/mobile-deploy.yml+`:
 
-```yaml
+[source,yaml]
+----
 name: Mobile Deployment
 
 on:
@@ -863,55 +918,55 @@ jobs:
         with:
           name: linux-arm64
           path: target/aarch64-unknown-linux-gnu/release/mobile-ai
-```
+----
 
----
+'''''
 
-## Troubleshooting
+=== Troubleshooting
 
-### Android
+[[android-3]]
+==== Android
 
-**Issue**: `UnsatisfiedLinkError` when loading library
-- **Fix**: Ensure library is in correct `jniLibs/` directory
-- **Fix**: Check ABI matches (arm64-v8a for aarch64)
+*Issue*: `+UnsatisfiedLinkError+` when loading library - *Fix*: Ensure
+library is in correct `+jniLibs/+` directory - *Fix*: Check ABI matches
+(arm64-v8a for aarch64)
 
-**Issue**: Binary too large for APK
-- **Fix**: Use ProGuard/R8 shrinking
-- **Fix**: Build with `opt-level = "z"`
-- **Fix**: Split APKs by ABI
+*Issue*: Binary too large for APK - *Fix*: Use ProGuard/R8 shrinking -
+*Fix*: Build with `+opt-level = "z"+` - *Fix*: Split APKs by ABI
 
-### iOS
+[[ios-3]]
+==== iOS
 
-**Issue**: Linker errors with static library
-- **Fix**: Ensure all dependencies are included
-- **Fix**: Link with `-lresolv` if needed
+*Issue*: Linker errors with static library - *Fix*: Ensure all
+dependencies are included - *Fix*: Link with `+-lresolv+` if needed
 
-**Issue**: App Store rejection due to size
-- **Fix**: Enable bitcode compilation
-- **Fix**: Use thinning for per-device optimization
+*Issue*: App Store rejection due to size - *Fix*: Enable bitcode
+compilation - *Fix*: Use thinning for per-device optimization
 
-### Linux Mobile
+[[linux-mobile-2]]
+==== Linux Mobile
 
-**Issue**: Binary won't run (Exec format error)
-- **Fix**: Ensure target matches device architecture
-- **Fix**: Check `file mobile-ai` output
+*Issue*: Binary won’t run (Exec format error) - *Fix*: Ensure target
+matches device architecture - *Fix*: Check `+file mobile-ai+` output
 
-**Issue**: High CPU usage
-- **Fix**: Profile with `perf record`
-- **Fix**: Optimize hot paths identified in benchmarks
+*Issue*: High CPU usage - *Fix*: Profile with `+perf record+` - *Fix*:
+Optimize hot paths identified in benchmarks
 
----
+'''''
 
-## Next Steps
+=== Next Steps
 
-1. **Test on real devices**: Android phone, iPhone, PinePhone
-2. **Profile power consumption**: Use platform tools to measure battery impact
-3. **Optimize for size**: Target <1MB for embedded systems
-4. **Create platform packages**: APK for Android, IPA for iOS, deb for Linux
-5. **Set up CI/CD**: Automated builds for all platforms
+[arabic]
+. *Test on real devices*: Android phone, iPhone, PinePhone
+. *Profile power consumption*: Use platform tools to measure battery
+impact
+. *Optimize for size*: Target <1MB for embedded systems
+. *Create platform packages*: APK for Android, IPA for iOS, deb for
+Linux
+. *Set up CI/CD*: Automated builds for all platforms
 
----
+'''''
 
-*For development setup, see main [README.md](README.md)*
-*For advanced features, see [ADVANCED_FEATURES.md](ADVANCED_FEATURES.md)*
-*For performance tuning, see benchmarking section in advanced features*
+_For development setup, see main README.md_ _For advanced features, see
+ADVANCED_FEATURES.md_ _For performance tuning, see benchmarking section
+in advanced features_
