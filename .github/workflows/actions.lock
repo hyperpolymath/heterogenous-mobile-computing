@@ -3,6 +3,12 @@
 # Docs: https://gh.io/actions-lockfile
 version: 'v0.0.2'
 workflows:
+    '.github/workflows/governance.yml': []
+    '.github/workflows/hypatia-scan.yml': []
+    '.github/workflows/mirror.yml': []
+    '.github/workflows/rust-ci.yml': []
+    '.github/workflows/scorecard.yml': []
+    '.github/workflows/secret-scanner.yml': []
     '.github/workflows/boj-build.yml':
         - 'actions/checkout@v7.0.0'
     '.github/workflows/casket-pages.yml':
@@ -92,7 +98,7 @@ dependencies:
             - 'actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f'
     'dawidd6/action-send-mail@v3.12.0':
         ref: 'v3.12.0'
-        commit: 'sha1-c50dc4cc848ade21f848990889906d804fae78c5'
+        commit: 'sha1-2cea9617b09d79a095af21254fbcb7ae95903dde'
         owner_id: 9713907
         repo_id: 222439721
     'dependabot/fetch-metadata@v3.1.0':
