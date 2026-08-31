@@ -25,16 +25,24 @@ workflows:
         - 'actions/checkout@v7.0.0'
     '.github/workflows/generator-generic-ossf-slsa3-publish.yml':
         - 'actions/checkout@v7.0.0'
+    '.github/workflows/governance.yml': []
+    '.github/workflows/hypatia-scan.yml': []
     '.github/workflows/instant-sync.yml':
         - 'peter-evans/repository-dispatch@v4.0.1'
+    '.github/workflows/label-triage.yml': []
+    '.github/workflows/labels.yml': []
+    '.github/workflows/mirror.yml': []
     '.github/workflows/pages.yml':
         - 'actions/checkout@v4.4.0'
         - 'actions/deploy-pages@v4.0.5'
         - 'actions/upload-pages-artifact@v3.0.1'
     '.github/workflows/push-email-notify.yml':
         - 'dawidd6/action-send-mail@v3.12.0'
+    '.github/workflows/rust-ci.yml': []
     '.github/workflows/rust.yml':
         - 'actions/checkout@v7.0.0'
+    '.github/workflows/scorecard.yml': []
+    '.github/workflows/secret-scanner.yml': []
 dependencies:
     'actions/cache@v6.1.0':
         ref: 'v6.1.0'
@@ -92,7 +100,7 @@ dependencies:
             - 'actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f'
     'dawidd6/action-send-mail@v3.12.0':
         ref: 'v3.12.0'
-        commit: 'sha1-c50dc4cc848ade21f848990889906d804fae78c5'
+        commit: 'sha1-2cea9617b09d79a095af21254fbcb7ae95903dde'
         owner_id: 9713907
         repo_id: 222439721
     'dependabot/fetch-metadata@v3.1.0':
