@@ -4,27 +4,27 @@
 version: 'v0.0.2'
 workflows:
     '.github/workflows/boj-build.yml':
-        - 'actions/checkout@v7.0.0'
+        - 'actions/checkout@v7.0.1'
     '.github/workflows/casket-pages.yml':
         - 'actions/cache@v6.1.0'
-        - 'actions/checkout@v7.0.0'
+        - 'actions/checkout@v7.0.1'
         - 'actions/configure-pages@v6.0.0'
-        - 'actions/deploy-pages@v5.0.0'
+        - 'actions/deploy-pages@v5.0.1'
         - 'actions/upload-pages-artifact@v5.0.0'
-        - 'haskell-actions/setup@v2.11.0'
+        - 'haskell-actions/setup@v2.12.0'
     '.github/workflows/cflite_batch.yml':
         - 'google/clusterfuzzlite@v1'
     '.github/workflows/cflite_pr.yml':
         - 'google/clusterfuzzlite@v1'
     '.github/workflows/codeql.yml':
-        - 'actions/checkout@v7.0.0'
-        - 'github/codeql-action@v4.37.1'
+        - 'actions/checkout@v7.0.1'
+        - 'github/codeql-action@v4.37.9'
     '.github/workflows/dependabot-automerge.yml':
         - 'dependabot/fetch-metadata@v3.1.0'
     '.github/workflows/dogfood-gate.yml':
-        - 'actions/checkout@v7.0.0'
+        - 'actions/checkout@v7.0.1'
     '.github/workflows/generator-generic-ossf-slsa3-publish.yml':
-        - 'actions/checkout@v7.0.0'
+        - 'actions/checkout@v7.0.1'
     '.github/workflows/governance.yml': []
     '.github/workflows/hypatia-scan.yml': []
     '.github/workflows/instant-sync.yml':
@@ -33,14 +33,14 @@ workflows:
     '.github/workflows/labels.yml': []
     '.github/workflows/mirror.yml': []
     '.github/workflows/pages.yml':
-        - 'actions/checkout@v4.4.0'
-        - 'actions/deploy-pages@v4.0.5'
-        - 'actions/upload-pages-artifact@v3.0.1'
+        - 'actions/checkout@v7.0.1'
+        - 'actions/deploy-pages@v5.0.1'
+        - 'actions/upload-pages-artifact@v5.0.0'
     '.github/workflows/push-email-notify.yml':
         - 'hyperpolymath/smtp-notify-action@v0.2.0'
     '.github/workflows/rust-ci.yml': []
     '.github/workflows/rust.yml':
-        - 'actions/checkout@v7.0.0'
+        - 'actions/checkout@v7.0.1'
     '.github/workflows/scorecard.yml': []
     '.github/workflows/secret-scanner.yml': []
 dependencies:
@@ -49,14 +49,9 @@ dependencies:
         commit: 'sha1-55cc8345863c7cc4c66a329aec7e433d2d1c52a9'
         owner_id: 44036562
         repo_id: 215566462
-    'actions/checkout@v4.4.0':
-        ref: 'v4.4.0'
-        commit: 'sha1-11d5960a326750d5838078e36cf38b85af677262'
-        owner_id: 44036562
-        repo_id: 197814629
-    'actions/checkout@v7.0.0':
-        ref: 'v7.0.0'
-        commit: 'sha1-9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0'
+    'actions/checkout@v7.0.1':
+        ref: 'v7.0.1'
+        commit: 'sha1-3d3c42e5aac5ba805825da76410c181273ba90b1'
         owner_id: 44036562
         repo_id: 197814629
     'actions/configure-pages@v6.0.0':
@@ -64,14 +59,9 @@ dependencies:
         commit: 'sha1-45bfe0192ca1faeb007ade9deae92b16b8254a0d'
         owner_id: 44036562
         repo_id: 513659658
-    'actions/deploy-pages@v4.0.5':
-        ref: 'v4.0.5'
-        commit: 'sha1-d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e'
-        owner_id: 44036562
-        repo_id: 438112499
-    'actions/deploy-pages@v5.0.0':
-        ref: 'v5.0.0'
-        commit: 'sha1-cd2ce8fcbc39b97be8ca5fce6e763baed58fa128'
+    'actions/deploy-pages@v5.0.1':
+        ref: 'v5.0.1'
+        commit: 'sha1-368f82528645a54fb793d4d04e342629a3f51346'
         owner_id: 44036562
         repo_id: 438112499
     'actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f':
@@ -79,18 +69,6 @@ dependencies:
         commit: 'sha1-bbbca2ddaa5d8feaa63e36b76fdaad77386f024f'
         owner_id: 44036562
         repo_id: 192625955
-    'actions/upload-artifact@v4':
-        ref: 'v4'
-        commit: 'sha1-ea165f8d65b6e75b540449e92b4886f43607fa02'
-        owner_id: 44036562
-        repo_id: 192625955
-    'actions/upload-pages-artifact@v3.0.1':
-        ref: 'v3.0.1'
-        commit: 'sha1-56afc609e74202658d3ffba0e8f6dda462b719fa'
-        owner_id: 44036562
-        repo_id: 496012378
-        uses:
-            - 'actions/upload-artifact@v4'
     'actions/upload-pages-artifact@v5.0.0':
         ref: 'v5.0.0'
         commit: 'sha1-fc324d3547104276b827a68afc52ff2a11cc49c9'
@@ -103,9 +81,9 @@ dependencies:
         commit: 'sha1-25dd0e34f4fe68f24cc83900b1fe3fe149efef98'
         owner_id: 27347476
         repo_id: 371068214
-    'github/codeql-action@v4.37.1':
-        ref: 'v4.37.1'
-        commit: 'sha1-7188fc363630916deb702c7fdcf4e481b751f97a'
+    'github/codeql-action@v4.37.9':
+        ref: 'v4.37.9'
+        commit: 'sha1-cdf488f595d80d6e07e03d4674febd5ab45fa938'
         owner_id: 9919
         repo_id: 259445878
     'google/clusterfuzzlite@v1':
@@ -113,9 +91,9 @@ dependencies:
         commit: 'sha1-884713a6c30a92e5e8544c39945cd7cb630abcd1'
         owner_id: 1342004
         repo_id: 400046858
-    'haskell-actions/setup@v2.11.0':
-        ref: 'v2.11.0'
-        commit: 'sha1-cd0d9bdd65b20557f41bea4dbe43d0b5fbbfe553'
+    'haskell-actions/setup@v2.12.0':
+        ref: 'v2.12.0'
+        commit: 'sha1-6037f33647c3f17758a2356c80fc4a53d7e0685d'
         owner_id: 75048950
         repo_id: 623796603
     'hyperpolymath/smtp-notify-action@v0.2.0':
