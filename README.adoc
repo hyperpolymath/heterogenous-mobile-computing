@@ -343,7 +343,7 @@ cargo run --example mlp_router
 
 Contributions welcome! This project operates under TPCF Perimeter 3 (Community Sandbox).
 
-See link:CONTRIBUTING.md[CONTRIBUTING.md] for guidelines.
+See link:.github/CONTRIBUTING.md[CONTRIBUTING.md] for guidelines.
 
 == License
 
