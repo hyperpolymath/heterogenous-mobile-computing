@@ -2,3 +2,8 @@
 # Prettier must not reformat them.
 package.json
 pnpm-lock.yaml
+
+# Stamped/generated paths with no Prettier baseline.
+.github/
+.claude/
+REQUIRES_INITIALISATION.md

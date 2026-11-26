@@ -29,10 +29,22 @@ gnu-grep = "latest"
 [env]
 # Common environment variables
 
-# Task runner alias
+# mise [alias] only maps tool names; build/test/lint/fmt are tasks.
 [alias]
 task = "go-task"
-build = "cargo build --release"
-test = "cargo test"
-lint = "bun install --frozen-lockfile && bunx --no-install --bun prettier --check ."
-fmt = "bun install --frozen-lockfile && bunx --no-install --bun prettier --write ."
+
+[tasks.build]
+run = "cargo build --release"
+dir = "{{config_root}}"
+
+[tasks.test]
+run = "cargo test"
+dir = "{{config_root}}"
+
+[tasks.lint]
+run = "bun install --frozen-lockfile && bunx --no-install --bun prettier --check ."
+dir = "{{config_root}}"
+
+[tasks.fmt]
+run = "bun install --frozen-lockfile && bunx --no-install --bun prettier --write ."
+dir = "{{config_root}}"
